@@ -1,0 +1,17 @@
+
+.containerStyle {
+    margin-top: 10% !important;
+}
+
+.headerText {
+    font-size: 3em !important; 
+}
+
+.centerItem {
+    text-align: center !important; 
+}
+
+.inputStyle {
+    padding-left: 35%;
+    padding-bottom: 1em; 
+}
