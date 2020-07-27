@@ -2,9 +2,11 @@ var express = require("express");
 var router = express.Router();
 const dotenv = require("dotenv");
 const request = require("request");
+const Room = require("../models/room");
 
 dotenv.config();
 
+// TEST ENDPOINT, call will be made from frontend
 router.get("/authorize", function (req, res) {
 	res.redirect(
 		"https://accounts.spotify.com/authorize?response_type=code" +
@@ -14,14 +16,10 @@ router.get("/authorize", function (req, res) {
 	);
 });
 
+// Retrieve authorization and refresh token from backend. Store in database under room name
 router.get("/get_token", function (req, res) {
 	let code = req.query.code;
-	let error = req.query.error;
-	// let state = req.params.state;
-	if (error) {
-		console.log("ERROR: " + error);
-		res.send("ERROR");
-	}
+	let room = req.query.room;
 
 	const options = {
 		url: "https://accounts.spotify.com/api/token",
@@ -35,11 +33,30 @@ router.get("/get_token", function (req, res) {
 		},
 	};
 
-	request(options, function (err, res, body) {
+	request(options, function (err, response, body) {
 		body = JSON.parse(body);
 		console.log(body);
+		if (body.error) {
+			console.log(body.error_description);
+			res.send("ERROR");
+		} else {
+			let newRoom = new Room({
+				name: room,
+				access_token: body.access_token,
+				refresh_token: body.refresh_token,
+				generated_time: Date.now(),
+			});
+			newRoom.save((err, room) => {
+				if (err) {
+					console.log(err);
+					res.send("ERROR");
+				} else {
+					console.log(room);
+					res.send("SUCCESS");
+				}
+			});
+		}
 	});
-	res.send("hello");
 });
 
 function refresh_token(refresh_key) {}
