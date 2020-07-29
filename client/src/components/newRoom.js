@@ -3,11 +3,16 @@ import './styles.css';
 import {Header, Container, Button} from 'semantic-ui-react';
 
 export default class newRoom extends React.Component {
+
     render() {
         return(
             <Container className="containerStyle">
-                <h1>new room page</h1>
-
+                <Header
+                className="headerText"
+                textAlign={"center"}
+                as="h1"
+                content={"Welcome to " + this.props.location.state.roomName}
+                />
             </Container>
         )
     }
