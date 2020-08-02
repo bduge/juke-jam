@@ -21,8 +21,8 @@ router.get("/authorize", function (req, res) {
 });
 
 // Retrieve authorization and refresh token from backend. Store in database under room name
-router.get("/get_token", async function (req, res) {
-	let code = req.query.token;
+router.post("/get_token", async function (req, res) {
+	let code = req.body.token;
 	let room = req.body.roomName || "Bill's room";
 
 	const token_options = {
