@@ -11,8 +11,10 @@ function connectSocket(server) {
 		});
 
 		// Join Room
-		socket.on("request join", (roomName, cb) => {
+		socket.on("request join", (roomName) => {
+			console.log("hit");
 			console.log(socket.rooms);
+			console.log(roomName);
 			if (roomName == "") {
 				return;
 			}
@@ -20,7 +22,6 @@ function connectSocket(server) {
 				return;
 			}
 			socket.join(roomName);
-			cb(roomName);
 		});
 
 		// Leave Room

@@ -14,16 +14,12 @@ router.get("/authorize", function (req, res) {
 	);
 });
 
-router.get("/get_token", function (req, res) {
-	let code = req.query.code;
-	let error = req.query.error;
-	// let state = req.params.state;
-	if (error) {
-		console.log("ERROR: " + error);
-		res.send("ERROR");
-	}
-
-	const options = {
+// Retrieve authorization and refresh token from backend. Store in database under room name
+router.post("/get_token", function (req, res) {
+	console.log("hiit");
+	let token = req.body.token;
+	let roomName = req.body.roomName;
+	const token_options = {
 		url: "https://accounts.spotify.com/api/token",
 		method: "POST",
 		form: {
@@ -35,11 +31,39 @@ router.get("/get_token", function (req, res) {
 		},
 	};
 
-	request(options, function (err, res, body) {
+	request(token_options, function (err, response, body) {
 		body = JSON.parse(body);
 		console.log(body);
+		let access_token = body.access_token;
+		const user_options = {
+		    url: "https://api.spotify.com/v1/me",
+		    method: "GET",
+		}
+		request();
+		if (body.error) {
+			console.log(body.error_description);
+			res.send("ERROR");
+		} else {
+			console.log("SUCCESS");
+			console.log('SUCCESS');
+			// let new_room = new Room({
+			// 	name: room,
+			// 	access_token: body.access_token,
+			// 	refresh_token: body.refresh_token,
+			// 	expires_in: body.expires_in,
+			// 	generated_time: Date.now(),
+			// });
+			// new_room.save((err, room) => {
+			// 	if (err) {
+			// 		console.log(err);
+			// 		res.send("ERROR");
+			// 	} else {
+			// 		console.log(room);
+			// 		res.send("SUCCESS");
+			// 	}
+			// });
+		}
 	});
-	res.send("hello");
 });
 
 function refresh_token(refresh_key) {}

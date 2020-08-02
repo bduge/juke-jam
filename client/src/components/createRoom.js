@@ -2,7 +2,9 @@ import React from 'react';
 import { Container, Header, Input, Button, Grid} from 'semantic-ui-react';
 import './styles.css';
 import {Link} from 'react-router-dom';
+import socketIOClient from "socket.io-client";
 
+const endpoint = "http://localhost:8000";
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const clientID = "91c3ae2425f9402eac9557c25c0080c0";
 const redirectURI = "http://localhost:3000/create-room";
@@ -16,6 +18,7 @@ export default class createRoom extends React.Component {
             roomName: '',
             isAuthenticated: false, 
             token: null, 
+            socket: socketIOClient(endpoint),
         };
     }
 
@@ -36,6 +39,7 @@ export default class createRoom extends React.Component {
     }
 
     sendToken = () => {
+        //Send Token to server 
         const requestOptions = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -45,9 +49,16 @@ export default class createRoom extends React.Component {
         .then(response => response.json())
         .then(data => {
             console.log("Success");
+            this.joinRoom();
         }).catch((error) => {
+            console.log("penis");
             console.log("ERROR:", error);
         })
+        //Create new socket channel (room)
+    }
+
+    joinRoom = () => {
+        this.state.socket.emit("request join", this.state.roomName);
     }
 
     render(){
