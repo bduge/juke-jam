@@ -32,11 +32,16 @@ class App extends React.Component {
 	}
 	sendMessage() {
 		this.state.socket.emit(
-			"chat message",
+			"request create",
 			document.getElementById("m").value,
-			this.state.room
+			this.updateRoom
 		);
-		document.getElementById("m").value = "";
+		// this.state.socket.emit(
+		// 	"chat message",
+		// 	document.getElementById("m").value,
+		// 	this.state.room
+		// );
+		// document.getElementById("m").value = "";
 	}
 	leaveRoom() {
 		if (this.state.room == "") {
@@ -54,6 +59,16 @@ class App extends React.Component {
 				<button onClick={this.sendMessage}>Send</button>
 				<button onClick={this.leaveRoom}>Leave</button>
 				<br />
+				<a
+					href={
+						"https://accounts.spotify.com/authorize?response_type=code" +
+						"&client_id=" +
+						"91c3ae2425f9402eac9557c25c0080c0" +
+						"&redirect_uri=http://localhost:8000/spotify/get_token"
+					}
+				>
+					TRY
+				</a>
 				<ul id="messages"></ul>
 			</div>
 		);
