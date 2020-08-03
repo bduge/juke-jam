@@ -32,7 +32,7 @@ router.post("/get_token", async function (req, res) {
 		params: {
 			grant_type: "authorization_code",
 			code: code,
-			redirect_uri: "http://localhost:8000/spotify/get_token",
+			redirect_uri: "http://localhost:3000/create-room",
 			client_id: process.env.CLIENT_ID,
 			client_secret: process.env.CLIENT_SECRET,
 		},
