@@ -11,17 +11,6 @@ function connectSocket(server) {
 			console.log("User disconnected");
 		});
 
-		// Create Room
-		socket.on("request create", async (roomName, callback) => {
-			let existing = await Room.findOne({ name: roomName }).exec();
-			if (existing) {
-				callback(false, "Room already exists");
-			} else {
-				socket.join(roomName);
-				callback(true, "Room created");
-			}
-		});
-
 		// Join Room
 		socket.on("request join", async (roomName, callback) => {
 			if (roomName == "") {
@@ -34,7 +23,7 @@ function connectSocket(server) {
 					callback(false, "Room doesn't exist");
 				} else {
 					socket.join(roomName);
-					cb(true, "Joined " + roomName);
+					callback(true, "Joined " + roomName);
 				}
 			}
 		});
