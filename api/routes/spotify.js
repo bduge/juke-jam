@@ -62,8 +62,7 @@ router.post("/get_token", async function (req, res) {
 		room_owner_email: email,
 		access_token: access_token,
 		refresh_token: body.refresh_token,
-		expires_in: body.expires_in,
-		generated_time: Date.now(),
+		token_expiry: +new Date(Date.now() + body.expires_in * 975),
 	});
 	new_room.save((err, room) => {
 		if (err) {
@@ -94,6 +93,21 @@ async function get_user(access_token) {
 	return body.email;
 }
 
-function refresh_token(room_name) {}
+router.get("/time", function (req, res) {
+	let room_name = req.query.name || "ryans room";
+	refresh_token(room_name);
+	res.send("Hello");
+});
+
+async function refresh_token(room_name) {
+	let room = await Room.findOne({ name: room_name }).exec();
+	let expiry_time = new Date(room.token_expiry);
+	console.log("TIME " + expiry_time);
+	if (Date.now() > expiry_time) {
+		console.log("Need update");
+	} else {
+		return;
+	}
+}
 
 module.exports = router;
