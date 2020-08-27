@@ -14,16 +14,17 @@ function connectSocket(server) {
 		// Join Room
 		socket.on("request join", async (roomName, callback) => {
 			if (roomName == "") {
-				callback(false, "Invalid room name");
+				// callback(false, "Invalid room name");
 			} else if (Object.keys(socket.rooms).length > 1) {
-				callback(false, "Already in room");
+				// callback(false, "Already in room");
 			} else {
 				let existing = await Room.findOne({ name: roomName }).exec();
 				if (!existing) {
-					callback(false, "Room doesn't exist");
+					// callback(false, "Room doesn't exist");
 				} else {
 					socket.join(roomName);
-					callback(true, "Joined " + roomName);
+					io.sockets.in(roomName).emit('joinedRoom', "Someone has joined the room");
+					// callback(true, "Joined " + roomName);
 				}
 			}
 		});

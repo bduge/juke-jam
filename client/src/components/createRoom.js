@@ -2,15 +2,13 @@ import React from 'react';
 import { Container, Header, Input, Button, Grid} from 'semantic-ui-react';
 import './styles.css';
 import {Link} from 'react-router-dom';
-import socketIOClient from "socket.io-client";
 
-const endpoint = "http://localhost:8000";
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const clientID = "91c3ae2425f9402eac9557c25c0080c0";
 const redirectURI = "http://localhost:3000/create-room";
 const scopes = 'user-read-private user-read-email';
 
-export default class createRoom extends React.Component {
+export default class CreateRoom extends React.Component {
 
     constructor(props) {
         super(props);
@@ -18,7 +16,7 @@ export default class createRoom extends React.Component {
             roomName: '',
             isAuthenticated: false, 
             token: null, 
-            socket: socketIOClient(endpoint),
+            // add new state property for if room name already exists 
         };
     }
 
@@ -46,20 +44,15 @@ export default class createRoom extends React.Component {
             body: JSON.stringify({ token: this.state.token, roomName: this.state.roomName}),
         };
         fetch('http://localhost:8000/spotify/get_token', requestOptions)
-        .then(response => response.json())
         .then(data => {
             console.log("Success");
-            this.joinRoom();
+            this.createRoom();
         }).catch((error) => {
-            console.log("penis");
             console.log("ERROR:", error);
         })
         //Create new socket channel (room)
     }
 
-    joinRoom = () => {
-        this.state.socket.emit("request join", this.state.roomName);
-    }
 
     render(){
         if(this.state.isAuthenticated){
@@ -83,6 +76,7 @@ export default class createRoom extends React.Component {
                     <Link to ={{
                         pathname:'/new-room',
                         state:{
+                            isHost : true, 
                             roomName: this.state.roomName,
                         }
                     }}>
