@@ -1,6 +1,6 @@
-import React from 'react';
-import './styles.css';
-import {Header, Container, Button} from 'semantic-ui-react';
+import React from "react";
+import "./styles.css";
+import { Header, Container, Button } from "semantic-ui-react";
 
 export default class NewRoom extends React.Component {
     constructor(props) {
