@@ -1,6 +1,12 @@
 import React from 'react';
 import { Container, Header, Input, Button, Grid} from 'semantic-ui-react';
-import {Link, Redirect} from 'react-router-dom';
+import {
+    Link, 
+    Switch, 
+    useParams, 
+    useRouteMatch,
+    Route,
+    BrowserRouter as Router} from 'react-router-dom';
 import './styles.css';
 import {socket} from './socketConnection';
 
@@ -53,7 +59,7 @@ export default class JoinRoom extends React.Component {
                     </Button>
                     </Link>
                     </Grid.Row>
-                </Container>
+                </Container> 
         )
     }
 }

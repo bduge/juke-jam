@@ -1,7 +1,8 @@
 import React from 'react';
 import { Container, Header, Input, Button, Grid} from 'semantic-ui-react';
 import './styles.css';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
+import {socket} from './socketConnection';
 
 const authEndpoint = 'https://accounts.spotify.com/authorize';
 const clientID = "91c3ae2425f9402eac9557c25c0080c0";
@@ -34,6 +35,10 @@ export default class CreateRoom extends React.Component {
         this.setState({
             roomName: value, 
         });
+    }
+
+    createRoom = () => {
+        socket.emit("request join", this.state.roomName);
     }
 
     sendToken = () => {
@@ -74,10 +79,9 @@ export default class CreateRoom extends React.Component {
                         placeholder="Click Here to Enter Room Name"
                     />
                     <Link to ={{
-                        pathname:'/new-room',
+                        pathname:'/new-room/' + this.state.roomName,
                         state:{
                             isHost : true, 
-                            roomName: this.state.roomName,
                         }
                     }}>
                     <Button 
