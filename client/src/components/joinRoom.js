@@ -1,6 +1,12 @@
 import React from 'react';
 import { Container, Header, Input, Button, Grid} from 'semantic-ui-react';
-import {Link} from 'react-router-dom';
+import {
+    Link, 
+    Switch, 
+    useParams, 
+    useRouteMatch,
+    Route,
+    BrowserRouter as Router} from 'react-router-dom';
 import './styles.css';
 import {socket} from './socketConnection';
 
@@ -10,29 +16,12 @@ export default class JoinRoom extends React.Component {
         this.state = {
             roomName: "",
         }
-        this.callbackFunc = this.callbackFunc.bind(this);
     }
 
     onSetName = (e, {value}) => {
         this.setState({
             roomName: value, 
         });
-    }
-
-    callbackFunc = (didPass) => {
-        if(didPass) {
-            <Redirect to ={{
-                pathname:'/new-room',
-                state:{
-                    isHost : false, 
-                    roomName: this.state.roomName,
-                }
-            }}/>
-        } 
-    }
-
-    joinRoom = () => {
-        socket.emit("request join", this.state.roomName, callbackFunc);
     }
 
     render() {
@@ -70,7 +59,7 @@ export default class JoinRoom extends React.Component {
                     </Button>
                     </Link>
                     </Grid.Row>
-                </Container>
+                </Container> 
         )
     }
 }

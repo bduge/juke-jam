@@ -9,7 +9,7 @@ import {
 import 'semantic-ui-css/semantic.min.css';
 import CreateRoom from './components/createRoom';
 import homepage from './components/homepage';
-import NewRoom from './components/newRoom';
+import Room from './components/room';
 import JoinRoom from './components/joinRoom';
 
 export default class App extends React.Component {
@@ -24,7 +24,7 @@ export default class App extends React.Component {
         <Switch>
           <Route path="/" exact component={homepage}/>
           <Route path="/create-room" component={CreateRoom}/>
-          <Route path="/new-room" component={NewRoom}/>
+          <Route path="/room/:roomId" component={Room}/>
           <Route path="/join-room" component={JoinRoom}/>
         </Switch>
       </div>
