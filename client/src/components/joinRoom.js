@@ -10,6 +10,7 @@ export default class JoinRoom extends React.Component {
         this.state = {
             roomName: "",
         }
+        this.callbackFunc = this.callbackFunc.bind(this);
     }
 
     onSetName = (e, {value}) => {
@@ -23,7 +24,7 @@ export default class JoinRoom extends React.Component {
             <Redirect to ={{
                 pathname:'/new-room',
                 state:{
-                    isHost : true, 
+                    isHost : false, 
                     roomName: this.state.roomName,
                 }
             }}/>
@@ -31,7 +32,6 @@ export default class JoinRoom extends React.Component {
     }
 
     joinRoom = () => {
-        this.bind(callbackFunc);
         socket.emit("request join", this.state.roomName, callbackFunc);
     }
 
