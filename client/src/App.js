@@ -7,20 +7,25 @@ import {
   Link
 } from "react-router-dom";
 import 'semantic-ui-css/semantic.min.css';
-import createRoom from './components/createRoom';
+import CreateRoom from './components/createRoom';
 import homepage from './components/homepage';
-import newRoom from './components/newRoom';
-
+import NewRoom from './components/newRoom';
+import JoinRoom from './components/joinRoom';
 
 export default class App extends React.Component {
-  render(){
+  constructor(props){
+    super(props);
+  }
+
+  render(){ 
     return(
       <Router>
       <div>
         <Switch>
           <Route path="/" exact component={homepage}/>
-          <Route path="/create-room" component={createRoom}/>
-          <Route path="/new-room" component={newRoom}/>
+          <Route path="/create-room" component={CreateRoom}/>
+          <Route path="/new-room" component={NewRoom}/>
+          <Route path="/join-room" component={JoinRoom}/>
         </Switch>
       </div>
       </Router>

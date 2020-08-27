@@ -23,6 +23,7 @@ function connectSocket(server) {
 					callback(false, "Room doesn't exist");
 				} else {
 					socket.join(roomName);
+					io.sockets.in(roomName).emit('joinedRoom', "Someone has joined the room");
 					callback(true, "Joined " + roomName);
 				}
 			}

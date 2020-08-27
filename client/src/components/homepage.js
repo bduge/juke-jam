@@ -26,12 +26,14 @@ export default function homepage() {
                     </Button.Content>
                 </Button>
                 </Link>
+                <Link to="/join-room">
                 <Button className="buttonStyle" animated basic size={"huge"} color={"blue"}>
                     <Button.Content visible>Join a Room</Button.Content>
                     <Button.Content hidden>
                         <Icon name='arrow right' />
                     </Button.Content>
                 </Button>
+                </Link>
             </Grid.Row>
         </Container>
     )
