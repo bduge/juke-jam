@@ -18,9 +18,21 @@ export default class JoinRoom extends React.Component {
         });
     }
 
+    callbackFunc = (didPass) => {
+        if(didPass) {
+            <Redirect to ={{
+                pathname:'/new-room',
+                state:{
+                    isHost : true, 
+                    roomName: this.state.roomName,
+                }
+            }}/>
+        } 
+    }
+
     joinRoom = () => {
-        console.log("here");
-        socket.emit("request join", this.state.roomName);
+        this.bind(callbackFunc);
+        socket.emit("request join", this.state.roomName, callbackFunc);
     }
 
     render() {
@@ -41,6 +53,13 @@ export default class JoinRoom extends React.Component {
                         transparent
                         placeholder="Click Here to Enter Room Name"
                     />
+                    <Link to ={{
+                        pathname:'/new-room',
+                        state:{
+                            isHost : false, 
+                            roomName: this.state.roomName,
+                        }
+                    }}>
                     <Button 
                     className={this.state.roomName == "" ? "disabled" : ""}
                     onClick={this.joinRoom}
@@ -49,6 +68,7 @@ export default class JoinRoom extends React.Component {
                     color={"blue"}>
                         Join 
                     </Button>
+                    </Link>
                     </Grid.Row>
                 </Container>
         )
