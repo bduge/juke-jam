@@ -22,17 +22,11 @@ class NewRoom extends React.Component {
     }
 
     componentDidMount() {
-        socket.emit("request join", this.state.roomName, this.callbackFunc)
+        socket.emit("request join", this.state.roomName, this.callbackFunc);
     }
 
     createRoom = () => {
         this.state.socket.emit("create room", this.state.roomName);
-    }
-
-    componentDidMount() {
-        if(this.state.isHost){
-            this.createRoom();
-        }
     }
 
     render() {
@@ -52,7 +46,6 @@ class NewRoom extends React.Component {
                 <h1>Error page will go here</h1>
             )
         }
-        
     }
 }
 
