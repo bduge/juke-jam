@@ -34,7 +34,7 @@ router.post("/get_token", async function (req, res) {
 		body = response.data;
 	} catch (error) {
 		console.log(error);
-		res.send("ERROR");
+		res.json({ ok: false, message: error });
 		return;
 	}
 
@@ -45,7 +45,7 @@ router.post("/get_token", async function (req, res) {
 		email = await get_user_email(access_token);
 	} catch (error) {
 		console.log(error);
-		res.send("ERROR");
+		res.json({ ok: false, message: error });
 		return;
 	}
 
@@ -57,12 +57,12 @@ router.post("/get_token", async function (req, res) {
 		refresh_token: body.refresh_token,
 		token_expiry: +new Date(Date.now() + body.expires_in * 980),
 	});
-	new_room.save((err, room) => {
-		if (err) {
-			console.log(err);
-			res.send("ERROR");
+	new_room.save((error, room) => {
+		if (error) {
+			console.log(error);
+			res.json({ ok: false, message: error });
 		} else {
-			res.send("SUCCESS");
+			res.json({ ok: true, message: "SUCCESS" });
 		}
 	});
 });
