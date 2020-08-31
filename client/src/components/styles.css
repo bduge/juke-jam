@@ -1,17 +1,34 @@
-
 .containerStyle {
-    margin-top: 10% !important;
+    margin-top: 5% !important;
 }
 
 .headerText {
-    font-size: 3em !important; 
+    font-size: 3em !important;
 }
 
 .centerItem {
-    text-align: center !important; 
+    text-align: center !important;
 }
 
 .inputStyle {
     padding-left: 35%;
-    padding-bottom: 1em; 
+    padding-bottom: 1em;
+}
+
+#searchBar {
+    border: 1px black solid;
+    border-radius: 5px;
+    width: 60%;
+    height: 100%;
+    padding: 0 10px;
+    margin: 0 15px;
+}
+
+#searchBar:focus {
+    outline: none;
+}
+
+#searchWrapper {
+    display: flex;
+    height: 30px;
 }
