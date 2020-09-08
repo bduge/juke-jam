@@ -35,16 +35,27 @@
 
 .navbar {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
 }
 
 #deviceContainer {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
+    padding: 30px 20px;
 }
 
 .device {
     margin: 0px 20px;
     text-align: center;
+}
+
+.deviceModal {
+    background-color: #e0e1e2;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.deviceButton {
+    background-color: white;
 }

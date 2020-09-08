@@ -90,7 +90,7 @@ class Room extends React.Component {
                             <Button>Leave</Button>
                         </Link>
                         {this.state.isHost ? (
-                            <DeviceModal roomName={this.state.roomName} />
+                            <DeviceModal roomName={this.state.roomName}/>
                         ) : (
                             <></>
                         )}

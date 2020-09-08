@@ -1,6 +1,6 @@
 import React from 'react'
 import './styles.css'
-import { Modal, Button, Icon, Loader } from 'semantic-ui-react'
+import { Modal, Button, Icon } from 'semantic-ui-react'
 import Device from './device'
 
 class DeviceModal extends React.Component {
@@ -13,6 +13,7 @@ class DeviceModal extends React.Component {
             loading: true,
         }
         this.getDevices = this.getDevices.bind(this)
+        this.renderDevices = this.renderDevices.bind(this)
     }
 
     componentDidMount() {
@@ -20,6 +21,7 @@ class DeviceModal extends React.Component {
     }
 
     async getDevices() {
+        this.setState({ loading: true })
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -29,28 +31,36 @@ class DeviceModal extends React.Component {
         }
 
         let children = []
-        fetch('http://localhost:8000/spotify/get_devices', requestOptions)
-            .then((data) => data.json())
-            .then((devices) => {
-                for (const device of devices) {
-                    console.log(device)
-                    children.push(
-                        <Device
-                            key={device.id}
-                            id={device.id}
-                            name={device.name}
-                            type={device.type}
-                        />
-                    )
-                }
-            })
-            .then(
-                this.setState({
-                    devices: children,
-                    loading: false,
-                })
+        try {
+            let devices = await fetch(
+                'http://localhost:8000/spotify/get_devices',
+                requestOptions
             )
-            .catch((error) => console.log(error))
+            devices = await devices.json()
+            console.log(devices)
+            for (const device of devices) {
+                children.push(device)
+            }
+            this.setState({
+                devices: children,
+                loading: false,
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    renderDevices() {
+        return this.state.devices.map((device) => {
+            return (
+                <Device
+                    key={device.id}
+                    id={device.id}
+                    name={device.name}
+                    type={device.type}
+                />
+            )
+        })
     }
 
     render() {
@@ -68,15 +78,14 @@ class DeviceModal extends React.Component {
             >
                 <Modal.Header>
                     Devices
-                    <Button onClick={this.getDevices}>Refresh</Button>
+                    <Button
+                        onClick={this.getDevices}
+                        style={{ float: 'right' }}
+                    >
+                        Refresh
+                    </Button>
                 </Modal.Header>
-                <Modal.Content>
-                    {this.state.loading ? (
-                        <Loader content="Loading" active inverted />
-                    ) : (
-                        <div id="deviceContainer">{this.state.devices}</div>
-                    )}
-                </Modal.Content>
+                <div id="deviceContainer">{this.renderDevices()}</div>
                 <Modal.Actions>
                     <Button color="green" onClick={this.props.saveDevice}>
                         Save
