@@ -30,10 +30,21 @@
 
 #searchWrapper {
     display: flex;
-    height: 30px;
+    height: 5px 30px;
 }
 
 .navbar {
     display: flex;
-    justify-content: 'flex-start';
+    justify-content: flex-start;
+}
+
+#deviceContainer {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.device {
+    margin: 0px 20px;
+    text-align: center;
 }

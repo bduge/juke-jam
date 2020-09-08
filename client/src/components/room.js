@@ -11,7 +11,7 @@ import {
 import { withRouter, Link } from 'react-router-dom'
 import { socket } from './socketConnection'
 import Song from './song'
-import Device from './device'
+import DeviceModal from './deviceModal'
 
 class Room extends React.Component {
     constructor(props) {
@@ -85,22 +85,15 @@ class Room extends React.Component {
         } else {
             return (
                 <Container className="containerStyle">
-                    <div id="nav" class="navbar">
+                    <div id="nav" className="navbar">
                         <Link to="/">
                             <Button>Leave</Button>
                         </Link>
-                        {this.props.isHost ? (
-                            <Button>
-                                <Icon name="mobile" />
-                                Device
-                            </Button>
+                        {this.state.isHost ? (
+                            <DeviceModal roomName={this.state.roomName} />
                         ) : (
                             <></>
                         )}
-                        <Button>
-                            <Icon name="mobile" />
-                            Device
-                        </Button>
                     </div>
                     <Header
                         className="headerText"

@@ -6,8 +6,6 @@ const Room = require('../models/room')
 
 dotenv.config()
 
-const scopes = 'user-read-private user-read-email'
-
 // Retrieve authorization and refresh token from backend. Store in database under room name
 router.post('/get_token', async function (req, res) {
     let code = req.body.token
@@ -165,6 +163,7 @@ async function refresh_token(room_name) {
 }
 
 // ROUTES FOR TESTING PURPOSES
+const scopes = 'user-read-private user-read-email'
 router.get('/refresh_token_test', function (req, res) {
     let room_name = req.query.name || 'test'
     refresh_token(room_name)
