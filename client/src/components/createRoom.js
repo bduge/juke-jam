@@ -63,66 +63,85 @@ export default class CreateRoom extends React.Component {
 		//Create new socket channel (room)
 	};
 
-	render() {
-		if (this.state.isAuthenticated) {
-			return (
-				<Container className="containerStyle">
-					<Header
-						className="headerText"
-						textAlign={"center"}
-						as="h1"
-						content="Create a Room!"
-					/>
-					<Grid.Row className="centerItem">
-						<Input
-							onChange={this.onSetName}
-							fluid
-							className="inputStyle"
-							size={"massive"}
-							transparent
-							placeholder="Click Here to Enter Room Name"
-						/>
-						<Button
-							onClick={this.sendToken}
-							className={this.state.roomName == "" ? "disabled" : ""}
-							basic
-							size={"huge"}
-							color={"blue"}
-						>
-							Create
-						</Button>
-					</Grid.Row>
-				</Container>
-			);
-		} else {
-			return (
-				<Container className="containerStyle">
-					<Header
-						className="headerText"
-						textAlign={"center"}
-						as="h1"
-						content="Login to Spotify"
-					/>
-					<Grid.Row className="centerItem">
-						<Button>
-							<a
-								href={
-									authEndpoint +
-									"?response_type=code" +
-									"&client_id=" +
-									clientID +
-									"&scope=" +
-									encodeURIComponent(scopes) +
-									"&redirect_uri=" +
-									encodeURIComponent(redirectURI)
-								}
-							>
-								Login to Spotify
-							</a>
-						</Button>
-					</Grid.Row>
-				</Container>
-			);
-		}
-	}
+    createRoom = () => {
+        socket.emit("request join", this.state.roomName);
+    }
+
+    sendToken = () => {
+        //Send Token to server 
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ token: this.state.token, roomName: this.state.roomName}),
+        };
+        fetch('http://localhost:8000/spotify/get_token', requestOptions)
+        .then(data => {
+            console.log("Success");
+            this.createRoom();
+        }).catch((error) => {
+            console.log("ERROR:", error);
+        })
+        //Create new socket channel (room)
+    }
+
+
+    render(){
+        if(this.state.isAuthenticated){
+            return(
+                <Container className="containerStyle">
+                    <Header
+                        className="headerText"
+                        textAlign={"center"}
+                        as="h1"
+                        content="Create a Room!"
+                    />
+                    <Grid.Row className="centerItem">
+                    <Input
+                        onChange={this.onSetName}
+                        fluid
+                        className="inputStyle"
+                        size={"massive"}
+                        transparent
+                        placeholder="Click Here to Enter Room Name"
+                    />
+                    <Link to ={{
+                        pathname:'/room/' + this.state.roomName,
+                        state:{
+                            isHost : true, 
+                        }
+                    }}>
+                    <Button 
+                    onClick={this.sendToken}
+                    className={this.state.roomName == "" ? "disabled" : ""} 
+                    basic 
+                    size={"huge"} 
+                    color={"blue"}>
+                        Create  
+                    </Button>
+                    </Link>
+                    </Grid.Row>
+                </Container>
+            )
+        } else {
+            return (
+                <Container className="containerStyle">
+                    <Header
+                        className="headerText"
+                        textAlign={"center"}
+                        as="h1"
+                        content="Login to Spotify"
+                    />
+                    <Grid.Row className="centerItem">
+                        <Button>
+                            <a href={ authEndpoint + '?response_type=code' + '&client_id=' + clientID + 
+                            '&scope=' + encodeURIComponent(scopes) + '&redirect_uri=' + encodeURIComponent(redirectURI)}>
+                                 Login to Spotify
+                            </a>
+                        </Button>
+                    </Grid.Row>
+                </Container>
+            )
+        }
+        
+    }
 }

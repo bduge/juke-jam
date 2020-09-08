@@ -50,15 +50,22 @@ export default class JoinRoom extends React.Component {
                         transparent
                         placeholder="Click Here to Enter Room Name"
                     />
-                    <Button
-                        className={this.state.roomName == '' ? 'disabled' : ''}
-                        onClick={this.joinRoom}
-                        basic
-                        size={'huge'}
-                        color={'blue'}
-                    >
-                        Join
+                    <Link to ={{
+                        pathname:'/room/' + this.state.roomName,
+                        state:{
+                            isHost : false, 
+                            roomName: this.state.roomName,
+                        }
+                    }}>
+                    <Button 
+                    className={this.state.roomName == "" ? "disabled" : ""}
+                    onClick={this.joinRoom}
+                    basic 
+                    size={"huge"} 
+                    color={"blue"}>
+                        Join 
                     </Button>
+                    </Link>
                 </Grid.Row>
             </Container>
         )
