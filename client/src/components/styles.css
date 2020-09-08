@@ -32,3 +32,8 @@
     display: flex;
     height: 30px;
 }
+
+.navbar {
+    display: flex;
+    justify-content: 'flex-start';
+}

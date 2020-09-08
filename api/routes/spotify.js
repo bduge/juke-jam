@@ -89,15 +89,6 @@ router.post('/get_devices', async function (req, res) {
     }
 
     let devices = body.devices.filter((device) => !device.is_restricted)
-    console.log(
-        devices.map((device) => {
-            return {
-                id: device.id,
-                name: device.name,
-                type: device.type,
-            }
-        })
-    )
     res.json(
         devices.map((device) => {
             return {

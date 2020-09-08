@@ -11,6 +11,7 @@ import {
 import { withRouter, Link } from 'react-router-dom'
 import { socket } from './socketConnection'
 import Song from './song'
+import Device from './device'
 
 class Room extends React.Component {
     constructor(props) {
@@ -84,15 +85,29 @@ class Room extends React.Component {
         } else {
             return (
                 <Container className="containerStyle">
+                    <div id="nav" class="navbar">
+                        <Link to="/">
+                            <Button>Leave</Button>
+                        </Link>
+                        {this.props.isHost ? (
+                            <Button>
+                                <Icon name="mobile" />
+                                Device
+                            </Button>
+                        ) : (
+                            <></>
+                        )}
+                        <Button>
+                            <Icon name="mobile" />
+                            Device
+                        </Button>
+                    </div>
                     <Header
                         className="headerText"
                         textAlign={'center'}
                         as="h3"
-                        content={this.state.roomName}
+                        content={this.state.roomName.toUpperCase()}
                     />
-                    <Link to="/">
-                        <Button>GO HOME TEST</Button>
-                    </Link>
                     <Grid>
                         <Grid.Column width={6}>
                             <Header
