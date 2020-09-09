@@ -11,6 +11,7 @@ import {
 import { withRouter, Link } from 'react-router-dom'
 import { socket } from './socketConnection'
 import Song from './song'
+import SearchBar from './searchBar'
 
 class Room extends React.Component {
     constructor(props) {
@@ -76,22 +77,6 @@ class Room extends React.Component {
         })
     }
 
-    searchSong = event => {
-        let searchVal = event.target.value;
-        let searchOptions = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ 
-                searchString: searchVal, 
-                roomName: this.state.roomName
-            }),
-        };
-        fetch("http://localhost:8000/spotify/search", searchOptions)
-        .then(data => data.json())
-        .then(data => console.log(data))
-        .catch(error => console.log(error));
-    }
-
     render() {
         if (this.state.checkingRoom) {
             return <Loader content="Loading" active />
@@ -125,11 +110,9 @@ class Room extends React.Component {
                                 content="Search"
                             />
                             <div id="searchWrapper">
-                                <input id="searchBar" onChange={this.searchSong} type="text"></input>
-                                <Button id="searchButton" icon size="tiny">
-                                    <Icon name="search" />
-                                </Button>
+                            <SearchBar roomName={this.state.roomName}/>
                             </div>
+
                             <div>{/* TODO: IMPLEMENT SEARCH RESULTS */}</div>
                         </Grid.Column>
                     </Grid>

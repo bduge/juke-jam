@@ -62,6 +62,7 @@ router.post("/get_token", async function (req, res) {
 			console.log(error);
 			res.json({ ok: false, message: error });
 		} else {
+			console.log("this worked!");
 			res.json({ ok: true, message: "SUCCESS" });
 		}
 	});
@@ -135,8 +136,10 @@ async function formatSongArr(objectArr) {
 	console.log(objectArr);
 	objectArr.forEach((item) => {
 		let songItem = {
-			name: item.name, 
-			artists: item.artists[0].name,
+			key: item.id, 
+			uri: item.uri, 
+			title: item.name, 
+			description: item.artists[0].name,
 			image: item.album.images[0].url, 
 		}
 		songArr.push(songItem);
@@ -148,7 +151,9 @@ async function formatSongArr(objectArr) {
 router.post("/search", async function(req, res) {
 	let searchString = req.body.searchString; 
 	let roomName = req.body.roomName; 
+	console.log("im here");
 	let currRoom = await Room.findOne({ name: roomName }).exec();
+	console.log(currRoom);
 	let authToken = currRoom.access_token; 
 	refresh_token(roomName);
 	console.log(authToken); 
