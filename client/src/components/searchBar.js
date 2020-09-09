@@ -20,10 +20,8 @@ const reducerFunc = (state, action) => {
 const SearchBar = (props) => {
     const [state, dispatch] = React.useReducer(reducerFunc, initialState);
     const { loadingState, results } = state;
-    console.log(results);
     const searchSong = (event) => {
         if(event.target.value.length === 0){
-            console.log(event.target.value.length);
             dispatch({type: 'NO_SEARCH'});
             return; 
         }
