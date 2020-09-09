@@ -45,6 +45,9 @@ class Room extends React.Component {
                 },
             },
         }
+        socket.on('queue_update', () => {
+            console.log('QUEUE UPDATED')
+        })
     }
 
     componentDidMount() {
@@ -142,7 +145,7 @@ class Room extends React.Component {
                                 content="Search"
                             />
                             <div id="searchWrapper">
-                            <SearchBar roomName={this.state.roomName}/>
+                                <SearchBar roomName={this.state.roomName} />
                             </div>
 
                             <div>{/* TODO: IMPLEMENT SEARCH RESULTS */}</div>

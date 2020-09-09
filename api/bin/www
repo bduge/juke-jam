@@ -28,7 +28,8 @@ app.set('port', port)
  */
 
 var server = http.createServer(app)
-connectSocket(server)
+const io = connectSocket(server)
+app.set('io', io)
 
 /**
  * Listen on provided port, on all network interfaces.
