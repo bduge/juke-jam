@@ -30,5 +30,31 @@
 
 #searchWrapper {
     display: flex;
-    height: 30px;
+    height: 5px 30px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+#deviceContainer {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.device {
+    margin: 0px 20px;
+    text-align: center;
+}
+
+.deviceModal {
+    background-color: #e0e1e2;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.deviceButton {
+    background-color: white;
 }
