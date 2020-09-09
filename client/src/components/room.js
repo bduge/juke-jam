@@ -11,6 +11,7 @@ import {
 import { withRouter, Link } from 'react-router-dom'
 import { socket } from './socketConnection'
 import Song from './song'
+import SearchBar from './searchBar'
 
 class Room extends React.Component {
     constructor(props) {
@@ -109,11 +110,9 @@ class Room extends React.Component {
                                 content="Search"
                             />
                             <div id="searchWrapper">
-                                <input id="searchBar" type="text"></input>
-                                <Button id="searchButton" icon size="tiny">
-                                    <Icon name="search" />
-                                </Button>
+                            <SearchBar roomName={this.state.roomName}/>
                             </div>
+
                             <div>{/* TODO: IMPLEMENT SEARCH RESULTS */}</div>
                         </Grid.Column>
                     </Grid>

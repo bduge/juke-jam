@@ -62,6 +62,7 @@ router.post("/get_token", async function (req, res) {
 			console.log(error);
 			res.json({ ok: false, message: error });
 		} else {
+			console.log("this worked!");
 			res.json({ ok: true, message: "SUCCESS" });
 		}
 	});
@@ -129,6 +130,55 @@ async function refresh_token(room_name) {
 		}
 	}
 }
+
+async function formatSongArr(objectArr) {
+	let songArr = [];
+	console.log(objectArr);
+	objectArr.forEach((item) => {
+		let songItem = {
+			key: item.id, 
+			uri: item.uri, 
+			title: item.name, 
+			description: item.artists[0].name,
+			image: item.album.images[0].url, 
+		}
+		songArr.push(songItem);
+	});
+	console.log(songArr);
+	return songArr; 
+}
+
+router.post("/search", async function(req, res) {
+	let searchString = req.body.searchString; 
+	let roomName = req.body.roomName; 
+	console.log("im here");
+	let currRoom = await Room.findOne({ name: roomName }).exec();
+	console.log(currRoom);
+	let authToken = currRoom.access_token; 
+	refresh_token(roomName);
+	console.log(authToken); 
+	const search_options = {
+		method: "get",
+		headers: { 
+			"Content-Type": "application/x-www-form-urlencoded",
+			"Authorization": "Bearer " + authToken, 
+		},
+		url: 'https://api.spotify.com/v1/search',
+		params: {
+			q: searchString, 
+			type: "track",
+			limit: 5, 
+		},
+	};
+
+	try {
+		let response = await axios(search_options);
+		let results = await formatSongArr(response.data.tracks.items);
+		res.send(results); 
+	} catch (error) {
+		console.log(error);
+	}
+});
 
 // ROUTES FOR TESTING PURPOSES
 router.get("/refresh_token_test", function (req, res) {
