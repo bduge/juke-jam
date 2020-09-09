@@ -64,6 +64,7 @@ export default class CreateRoom extends React.Component {
         //Create new socket channel (room)
     }
 
+
     render() {
         if (this.state.isAuthenticated) {
             return (
