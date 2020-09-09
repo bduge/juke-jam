@@ -191,7 +191,7 @@ async function formatSongArr(objectArr) {
 	console.log(objectArr);
 	objectArr.forEach((item) => {
 		let songItem = {
-			key: item.id, 
+			id: item.id, 
 			uri: item.uri, 
 			title: item.name, 
 			description: item.artists[0].name,

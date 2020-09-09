@@ -1,15 +1,7 @@
 import React from 'react'
 import { Container, Header, Input, Button, Grid } from 'semantic-ui-react'
-import {
-    Link,
-    Switch,
-    useParams,
-    useRouteMatch,
-    Route,
-    BrowserRouter as Router,
-} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import './styles.css'
-import { socket } from './socketConnection'
 
 export default class JoinRoom extends React.Component {
     constructor(props) {
@@ -58,7 +50,7 @@ export default class JoinRoom extends React.Component {
                         }
                     }}>
                     <Button 
-                    className={this.state.roomName == "" ? "disabled" : ""}
+                    className={this.state.roomName === "" ? "disabled" : ""}
                     onClick={this.joinRoom}
                     basic 
                     size={"huge"} 

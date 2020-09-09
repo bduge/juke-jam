@@ -1,16 +1,8 @@
 import React from 'react'
 import './styles.css'
-import { Grid, Image, Icon, Button } from 'semantic-ui-react'
-import { withRouter } from 'react-router-dom'
-import { socket } from './socketConnection'
+import { Grid, Image, Icon} from 'semantic-ui-react'
 
 class Song extends React.Component {
-    constructor(props) {
-        super(props)
-        // this.state = {
-        //     likes: this.props.likes || 0,
-        // }
-    }
 
     render() {
         return (

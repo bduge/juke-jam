@@ -3,8 +3,7 @@ import "./App.css";
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 import 'semantic-ui-css/semantic.min.css';
 import CreateRoom from './components/createRoom';
@@ -13,9 +12,6 @@ import Room from './components/room';
 import JoinRoom from './components/joinRoom';
 
 export default class App extends React.Component {
-  constructor(props){
-    super(props);
-  }
 
   render(){ 
     return(

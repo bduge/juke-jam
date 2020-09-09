@@ -1,8 +1,6 @@
 import React from 'react'
 import { Container, Header, Input, Button, Grid } from 'semantic-ui-react'
 import './styles.css'
-import { Link, Redirect } from 'react-router-dom'
-import { socket } from './socketConnection'
 
 const authEndpoint = 'https://accounts.spotify.com/authorize'
 const clientID = '91c3ae2425f9402eac9557c25c0080c0'
@@ -87,7 +85,7 @@ export default class CreateRoom extends React.Component {
                         <Button
                             onClick={this.sendToken}
                             className={
-                                this.state.roomName == '' ? 'disabled' : ''
+                                this.state.roomName === '' ? 'disabled' : ''
                             }
                             basic
                             size={'huge'}
