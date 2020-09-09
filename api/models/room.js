@@ -6,6 +6,7 @@ let roomSchema = new mongoose.Schema({
 	access_token: String,
 	refresh_token: String,
 	token_expiry: Date,
+	device_id: String, 
 });
 
 module.exports = mongoose.model("Room", roomSchema);

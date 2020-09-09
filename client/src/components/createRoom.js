@@ -7,7 +7,8 @@ import { socket } from './socketConnection'
 const authEndpoint = 'https://accounts.spotify.com/authorize'
 const clientID = '91c3ae2425f9402eac9557c25c0080c0'
 const redirectURI = 'http://localhost:3000/create-room'
-const scopes = 'user-read-private user-read-email user-read-playback-state'
+const scopes =
+    'user-read-private user-read-email user-read-playback-state user-modify-playback-state'
 
 export default class CreateRoom extends React.Component {
     constructor(props) {

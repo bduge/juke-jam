@@ -1,10 +1,7 @@
 var express = require('express')
 var router = express.Router()
-const dotenv = require('dotenv')
 const axios = require('axios')
 const Room = require('../models/room')
-
-dotenv.config()
 
 // Retrieve authorization and refresh token from backend. Store in database under room name
 router.post('/get_token', async function (req, res) {
@@ -96,6 +93,34 @@ router.post('/get_devices', async function (req, res) {
             }
         })
     )
+})
+
+router.put('/update_device', async function (req, res) {
+    let roomName = req.body.room
+    let deviceId = req.body.device
+    let room = await Room.findOne({ name: roomName }).exec()
+    let token = await refresh_token(roomName)
+    let transfer_options = {
+        method: 'put',
+        headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+        url: 'https://api.spotify.com/v1/me/player',
+        data: {
+            device_ids: [deviceId],
+        },
+    }
+    axios(transfer_options)
+        .then(() => {
+            room.device_id = deviceId
+            room.save()
+            res.json({ ok: true, message: 'Transfer Request sent' })
+        })
+        .catch((error) => {
+            console.log(error)
+            res.json({ ok: false, message: error })
+        })
 })
 
 // Get users email from spotify api

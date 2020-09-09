@@ -9,6 +9,7 @@ class DeviceModal extends React.Component {
         this.state = {
             open: false,
             selectedId: this.props.active || null,
+            selectedName: this.props.activeName || null,
             devices: this.props.devices || [],
             loading: true,
         }
@@ -37,7 +38,6 @@ class DeviceModal extends React.Component {
                 requestOptions
             )
             devices = await devices.json()
-            console.log(devices)
             for (const device of devices) {
                 children.push(device)
             }
@@ -53,12 +53,23 @@ class DeviceModal extends React.Component {
     renderDevices() {
         return this.state.devices.map((device) => {
             return (
-                <Device
+                <Button
                     key={device.id}
-                    id={device.id}
-                    name={device.name}
-                    type={device.type}
-                />
+                    onClick={() => {
+                        this.setState({
+                            selectedId: device.id,
+                            selectedName: device.name,
+                        })
+                        this.props.saveDevice(device.id)
+                    }}
+                >
+                    <Device
+                        key={device.id}
+                        id={device.id}
+                        name={device.name}
+                        type={device.type}
+                    />
+                </Button>
             )
         })
     }
@@ -72,7 +83,9 @@ class DeviceModal extends React.Component {
                 trigger={
                     <Button>
                         <Icon name="mobile" />
-                        Device
+                        {this.state.selectedName
+                            ? 'Playing on ' + this.state.selectedName
+                            : 'Devices'}
                     </Button>
                 }
             >
@@ -85,12 +98,9 @@ class DeviceModal extends React.Component {
                         Refresh
                     </Button>
                 </Modal.Header>
-                <div id="deviceContainer">{this.renderDevices()}</div>
-                <Modal.Actions>
-                    <Button color="green" onClick={this.props.saveDevice}>
-                        Save
-                    </Button>
-                </Modal.Actions>
+                <Modal.Content>
+                    <div id="deviceContainer">{this.renderDevices()}</div>
+                </Modal.Content>
             </Modal>
         )
     }
