@@ -6,7 +6,6 @@ import {
     Button,
     Loader,
     Grid,
-    Icon,
 } from 'semantic-ui-react'
 import { withRouter, Link } from 'react-router-dom'
 import { socket } from './socketConnection'
@@ -91,7 +90,7 @@ class Room extends React.Component {
         fetch('http://localhost:8000/spotify/update_device', requestOptions)
             .then((data) => data.json())
             .then((data) => {
-                if (data.ok != true) {
+                if (data.ok !== true) {
                     console.log(data.message)
                 }
             })
