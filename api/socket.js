@@ -57,6 +57,7 @@ function connectSocket(server) {
             io.to(room).emit('chat message', msg)
         })
     })
+    return io
 }
 
 module.exports = connectSocket
