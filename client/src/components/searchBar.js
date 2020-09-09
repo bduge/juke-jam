@@ -6,6 +6,21 @@ const initialState = {
     results: [],
 }
 
+const selectSong = (songObj, roomName) => {
+    let sendSongOptions = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            song: songObj,
+            roomName: roomName
+        })
+    }
+    fetch("http://localhost:8000/spotify/ENDPOINT", sendSongOptions)
+    .then(() => console.log("SUCCESS"))
+    .catch(error => console.log(error));
+        
+}
+
 const reducerFunc = (state, action) => {
     switch (action.type) {
         case 'NO_SEARCH':
@@ -14,6 +29,9 @@ const reducerFunc = (state, action) => {
             return {...state, loadingState: true, results: null, value: action.query}
         case 'FINISH_SEARCH':
             return {...state, loadingState: false, results: action.results}
+        case 'SELECT_SONG':
+            selectSong(action.selection, action.roomName);
+            return {...state, loadingState: false}
     }
 }
 
@@ -53,6 +71,13 @@ const SearchBar = (props) => {
             loading={loadingState}
             onSearchChange={searchSong}
             results={results}
+            onResultSelect={(e, data) => {
+                dispatch({
+                    type: 'SELECT_SONG', 
+                    selection: data.result,
+                    roomName: props.roomName, 
+                })
+            }}
             />
             </Grid.Column>
         </Grid>
