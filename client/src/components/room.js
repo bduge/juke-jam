@@ -3,16 +3,12 @@ import './styles.css'
 import { Header, Container, Button, Loader, Grid } from 'semantic-ui-react'
 import { withRouter, Link } from 'react-router-dom'
 import { socket } from './socketConnection'
-import Song from './song'
 import DeviceModal from './deviceModal'
 import SearchBar from './searchBar'
+import Queue from './queue'
 import Player from './player'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
 
-const mapStateToProps = (state) => {
-    return state.queue
-}
+
 
 class Room extends React.Component {
     constructor(props) {
@@ -46,21 +42,7 @@ class Room extends React.Component {
             : this.setState({ roomExist: false, checkingRoom: false })
     }
 
-    makeQueue() {
-        return Object.keys(this.props.queue).map((key, _) => {
-            const song = this.props.queue[key]
-            return (
-                <Song
-                    key={song.title + song.artist}
-                    name={song.title}
-                    artist={song.description}
-                    likes={song.likes}
-                    image={song.image}
-                    inQueue={true}
-                />
-            )
-        })
-    }
+
 
     saveDevice = (deviceId) => {
         const requestOptions = {
@@ -117,7 +99,9 @@ class Room extends React.Component {
                                 as="h2"
                                 content="Queue"
                             />
-                            <div id="queue">{this.makeQueue()}</div>
+                            <div id="queue">
+                                <Queue/>
+                            </div>
                         </Grid.Column>
                         <Grid.Column width={6}>
                             <Header
@@ -129,7 +113,6 @@ class Room extends React.Component {
                                 <SearchBar roomName={this.state.roomName} />
                             </div>
 
-                            <div>{/* TODO: IMPLEMENT SEARCH RESULTS */}</div>
                         </Grid.Column>
                         <Grid.Column width={4}>
                             <Player
@@ -144,4 +127,4 @@ class Room extends React.Component {
     }
 }
 
-export default connect(mapStateToProps)(withRouter(Room))
+export default withRouter(Room)

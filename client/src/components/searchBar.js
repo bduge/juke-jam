@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react'
 import { Search, Grid, Popup } from 'semantic-ui-react'
 import { socket } from './socketConnection'
 import { useDispatch } from 'react-redux'
-import { addSong } from '../actions/actions'
+import { addSong, changeLike } from '../actions/actions'
 
 const initialState = {
     loadingState: false,
@@ -56,11 +56,15 @@ const SearchBar = (props) => {
     const { loadingState, results, value } = state
     const songDispatch = useDispatch()
 
-    // Called when store queue is updated
     useEffect(() => {
+        console.log("Use Effect Ran")
         socket.on('queue_update', (song) => {
             console.log(song)
             songDispatch(addSong(song))
+        })
+        socket.on('changeLike', (song) => {
+            console.log(song)
+            songDispatch(changeLike(song))
         })
     }, [])
 
