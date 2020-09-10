@@ -1,12 +1,6 @@
 import React from 'react'
 import './styles.css'
-import {
-    Header,
-    Container,
-    Button,
-    Loader,
-    Grid,
-} from 'semantic-ui-react'
+import { Header, Container, Button, Loader, Grid } from 'semantic-ui-react'
 import { withRouter, Link } from 'react-router-dom'
 import { socket } from './socketConnection'
 import Song from './song'
@@ -16,9 +10,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 
 const mapStateToProps = (state) => {
-    return {
-        queue: state.queue
-    }
+    return state.queue
 }
 
 class Room extends React.Component {
@@ -59,8 +51,8 @@ class Room extends React.Component {
             return (
                 <Song
                     key={song.songTitle + song.artist}
-                    name={song.songTitle}
-                    artist={song.artist}
+                    name={song.title}
+                    artist={song.description}
                     likes={song.likes}
                     image={song.image}
                     inQueue={true}
@@ -144,6 +136,5 @@ class Room extends React.Component {
         }
     }
 }
-
 
 export default connect(mapStateToProps)(withRouter(Room))

@@ -3,13 +3,9 @@ var router = express.Router()
 let Room = require('../models/room')
 
 router.post('/add_song', async function (req, res) {
-    console.log("giant penis")
-    console.log(req.body.song)
     let song = req.body.song
     let roomName = req.body.roomName
     let room = await Room.findOne({ name: roomName }).exec()
-    console.log("ROOM:")
-    console.log(room);
     let index
     const found = room.song_queue.find((curSong, i) => {
         if (curSong.uri == song.uri) {
@@ -27,10 +23,10 @@ router.post('/add_song', async function (req, res) {
             likes: 0,
         })
     }
-    console.log("UPDATED ROOM")
-    console.log(room);
+    console.log('UPDATED ROOM', roomName)
     room.save()
     req.app.get('io').to(roomName).emit('queue_update', song)
+    res.json({ ok: true, message: 'song added' })
 })
 
 module.exports = router
