@@ -186,6 +186,23 @@ async function refresh_token(room_name) {
     return room.access_token
 }
 
+function playSong(songObj) {
+    let songId = songObj.id
+    const songOptions = {
+        method: 'put',
+        headers: { 
+			"Content-Type": "application/x-www-form-urlencoded",
+			"Authorization": "Bearer " + authToken, 
+        },
+        url: "https://api.spotify.com/v1/me/player/play",
+        params: {
+            context_uri: songObj.uri, 
+            position_ms: 0,
+        }
+    }
+}
+
+// Helper function to format song object
 async function formatSongArr(objectArr) {
 	let songArr = [];
 	console.log(objectArr);
@@ -195,7 +212,8 @@ async function formatSongArr(objectArr) {
 			uri: item.uri, 
 			title: item.name, 
 			description: item.artists[0].name,
-			image: item.album.images[0].url, 
+            image: item.album.images[0].url, 
+            length: item.duration_ms
 		}
 		songArr.push(songItem);
 	});
@@ -203,6 +221,7 @@ async function formatSongArr(objectArr) {
 	return songArr; 
 }
 
+// Search for song using spotify api 
 router.post("/search", async function(req, res) {
 	let searchString = req.body.searchString; 
 	let roomName = req.body.roomName; 
@@ -228,7 +247,7 @@ router.post("/search", async function(req, res) {
 
 	try {
 		let response = await axios(search_options);
-		let results = await formatSongArr(response.data.tracks.items);
+        let results = await formatSongArr(response.data.tracks.items);
 		res.send(results); 
 	} catch (error) {
 		console.log(error);

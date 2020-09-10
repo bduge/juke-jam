@@ -12,6 +12,14 @@ import { socket } from './socketConnection'
 import Song from './song'
 import DeviceModal from './deviceModal'
 import SearchBar from './searchBar'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+
+const mapStateToProps = (state) => {
+    return {
+        queue: state.queue
+    }
+}
 
 class Room extends React.Component {
     constructor(props) {
@@ -27,27 +35,7 @@ class Room extends React.Component {
             isHost: getIsHost,
             roomExist: null,
             checkingRoom: true,
-            queue: {
-                // Sample data
-                0: {
-                    songTitle: 'Rainbow Bap',
-                    artist: 'Jaden Smith',
-                    likes: 4,
-                    image:
-                        'https://images.complex.com/complex/images/c_fill,dpr_auto,f_auto,q_90,w_1400/fl_lossy,pg_1/enb4vwjaj54jtat121st/jaden-smith-ctv3-cool-tape-vol-3-stream',
-                },
-                1: {
-                    songTitle: 'Wishing Well',
-                    artist: 'Juice Wrld',
-                    likes: 2,
-                    image:
-                        'https://upload.wikimedia.org/wikipedia/en/f/f6/Juice_Wrld_-_Legends_Never_Die.png',
-                },
-            },
         }
-        socket.on('queue_update', () => {
-            console.log('QUEUE UPDATED')
-        })
     }
 
     componentDidMount() {
@@ -66,8 +54,8 @@ class Room extends React.Component {
     }
 
     makeQueue() {
-        return Object.keys(this.state.queue).map((key, _) => {
-            const song = this.state.queue[key]
+        return Object.keys(this.props.queue).map((key, _) => {
+            const song = this.props.queue[key]
             return (
                 <Song
                     key={song.songTitle + song.artist}
@@ -157,4 +145,5 @@ class Room extends React.Component {
     }
 }
 
-export default withRouter(Room)
+
+export default connect(mapStateToProps)(withRouter(Room))

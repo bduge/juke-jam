@@ -1,6 +1,6 @@
 import React from 'react'
 import './styles.css'
-import { Grid, Image, Icon} from 'semantic-ui-react'
+import { Grid, Image, Icon, Popup} from 'semantic-ui-react'
 
 class Song extends React.Component {
 
