@@ -6,6 +6,7 @@ import { socket } from './socketConnection'
 import DeviceModal from './deviceModal'
 import SearchBar from './searchBar'
 import Queue from './queue'
+import Player from './player'
 
 
 
@@ -102,7 +103,7 @@ class Room extends React.Component {
                                 <Queue/>
                             </div>
                         </Grid.Column>
-                        <Grid.Column width={10}>
+                        <Grid.Column width={6}>
                             <Header
                                 textAlign={'left'}
                                 as="h2"
@@ -112,6 +113,12 @@ class Room extends React.Component {
                                 <SearchBar roomName={this.state.roomName} />
                             </div>
 
+                        </Grid.Column>
+                        <Grid.Column width={4}>
+                            <Player
+                                room={this.state.roomName}
+                                isHost={this.state.isHost}
+                            ></Player>
                         </Grid.Column>
                     </Grid>
                 </Container>
