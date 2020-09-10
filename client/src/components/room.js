@@ -6,6 +6,7 @@ import { socket } from './socketConnection'
 import Song from './song'
 import DeviceModal from './deviceModal'
 import SearchBar from './searchBar'
+import Player from './player'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 
@@ -50,7 +51,7 @@ class Room extends React.Component {
             const song = this.props.queue[key]
             return (
                 <Song
-                    key={song.songTitle + song.artist}
+                    key={song.title + song.artist}
                     name={song.title}
                     artist={song.description}
                     likes={song.likes}
@@ -118,7 +119,7 @@ class Room extends React.Component {
                             />
                             <div id="queue">{this.makeQueue()}</div>
                         </Grid.Column>
-                        <Grid.Column width={10}>
+                        <Grid.Column width={6}>
                             <Header
                                 textAlign={'left'}
                                 as="h2"
@@ -129,6 +130,12 @@ class Room extends React.Component {
                             </div>
 
                             <div>{/* TODO: IMPLEMENT SEARCH RESULTS */}</div>
+                        </Grid.Column>
+                        <Grid.Column width={4}>
+                            <Player
+                                room={this.state.roomName}
+                                isHost={this.state.isHost}
+                            ></Player>
                         </Grid.Column>
                     </Grid>
                 </Container>
