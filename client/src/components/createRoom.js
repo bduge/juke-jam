@@ -1,5 +1,7 @@
 import React from 'react'
 import { Container, Header, Input, Button, Grid } from 'semantic-ui-react'
+import { connect } from 'react-redux'
+import { setRoomName } from '../actions/actions'
 import './styles.css'
 
 const authEndpoint = 'https://accounts.spotify.com/authorize'
@@ -8,7 +10,13 @@ const redirectURI = 'http://localhost:3000/create-room'
 const scopes =
     'user-read-private user-read-email user-read-playback-state user-modify-playback-state'
 
-export default class CreateRoom extends React.Component {
+const mapDispatchToProps = (dispatch) => {
+    return({
+        setRoomName: (roomName) => {dispatch(setRoomName(roomName))}
+    })
+}
+
+class CreateRoom extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -33,6 +41,7 @@ export default class CreateRoom extends React.Component {
         this.setState({
             roomName: value,
         })
+        this.props.setRoomName(value)
     }
 
     sendToken = () => {
@@ -128,3 +137,5 @@ export default class CreateRoom extends React.Component {
         }
     }
 }
+// export default CreateRoom
+export default connect(null, mapDispatchToProps)(CreateRoom)
