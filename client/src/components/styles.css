@@ -58,3 +58,18 @@
 .deviceButton {
     background-color: white;
 }
+
+.playerContainer {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.playerButton {
+    margin: 10px !important;
+}
+.playerButton:hover {
+    cursor: pointer;
+    color: #3f3f3f;
+}

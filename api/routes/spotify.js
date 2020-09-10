@@ -150,6 +150,11 @@ router.post('/search', async function (req, res) {
     }
 })
 
+router.put('/play', async function (req, res) {
+    let result = await playSong(req.body.room, req.app.get('io'))
+    res.json(result)
+})
+
 // Get users email from spotify api
 async function get_user_email(access_token) {
     const user_options = {
@@ -214,20 +219,41 @@ async function refresh_token(room_name) {
     return room.access_token
 }
 
-function playSong(songObj) {
-    let songId = songObj.id
-    const songOptions = {
+async function playSong(roomName, io) {
+    let room = await Room.findOne({ name: roomName }).exec()
+    if (room.song_queue.length == 0) {
+        return { ok: true, message: 'Queue is empty' }
+    }
+    let song = room.song_queue.reduce((mostLiked, song) => {
+        return song.likes > mostLiked.likes ? song : mostLiked
+    })
+    let authToken = await refresh_token(roomName)
+    console.log(song)
+    const playOptions = {
         method: 'put',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            Authorization: 'Bearer ' + authToken,
-        },
         url: 'https://api.spotify.com/v1/me/player/play',
+        headers: {
+            Authorization: 'Bearer ' + authToken,
+            'Content-Type': 'application/json',
+        },
         params: {
-            context_uri: songObj.uri,
-            position_ms: 0,
+            device_id: room.device_id,
+        },
+        data: {
+            uris: [song.uri],
         },
     }
+    axios(playOptions)
+        .then(() => {
+            room.updateOne({ $pull: { song_queue: { uri: song.uri } } }).exec()
+            io.to(roomName).emit("song_played", song.uri)
+            setTimeout(() => playSong(roomName, io), song.length)
+            return { ok: true, message: 'Song played' }
+        })
+        .catch((error) => {
+            console.log(error.response.data)
+            return { ok: false, message: error }
+        })
 }
 
 // Helper function to format song object
