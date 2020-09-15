@@ -7,9 +7,10 @@ router.post('/change_like', async function(req, res){
     let songTitle = req.body.songTitle
     let roomName = req.body.roomName
     let room = await Room.findOne({name: roomName}).exec()
+    let changeVal = req.body.changeByTwo ? 2: 1
     room.song_queue.find((curSong, i) => {
         if(songTitle === curSong.title){
-            req.body.isLike ? room.song_queue[i].likes++ : room.song_queue[i].likes--
+            req.body.isLike ? room.song_queue[i].likes += changeVal : room.song_queue[i].likes -= changeVal
             room.save()
             req.app.get('io').to(roomName).emit('changeLike', curSong)
             res.json({ok: true, message: 'Like Changed'})
