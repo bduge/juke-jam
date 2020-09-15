@@ -115,6 +115,11 @@ class Room extends React.Component {
 
                         </Grid.Column>
                         <Grid.Column width={4}>
+                        <Header
+                                textAlign={'left'}
+                                as="h2"
+                                content="Playing"
+                            />
                             <Player
                                 room={this.state.roomName}
                                 isHost={this.state.isHost}
