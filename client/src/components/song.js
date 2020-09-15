@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './styles.css'
 import { Grid, Image, Icon, Button} from 'semantic-ui-react'
 import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { resetLike } from '../actions/actions'
 
 const mapStateToProps = (state) => {
     return ({
@@ -26,8 +28,20 @@ const handleOnClick = (like, songTitle, roomName, changeByTwo) => {
         .catch((error) => console.log(error))
 }
 
+
+
 const Song = (props) => {
     const [isLike, setLike] = useState(null);
+    const songDispatch = useDispatch();
+    window.onbeforeunload = (e) => {
+        if(isLike){
+            songDispatch(resetLike(props.name, false))
+            handleOnClick(false, props.name, props.roomName, false)
+        } else if(isLike === false){
+            songDispatch(resetLike(props.name, true))
+            handleOnClick(true, props.name, props.roomName, false)
+        }
+    }
     return (
         <Grid>
             <Grid.Column width={4}>

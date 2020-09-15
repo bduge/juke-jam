@@ -20,6 +20,27 @@ const queueReducer = (state = initialState, action) => {
                     }
                 })
             })
+        case 'RESET_LIKE':
+            console.log("RESET_LIKE")
+            return Object.assign({}, state, {
+                queue: state.queue.map((song) => {
+                    if(song.title === action.songTitle){
+                        if(action.isIncrease){
+                            return Object.assign({}, song, {
+                                likes: song.likes++
+                            })
+                        } else if(action.isIncrease === false){
+                            console.log("DECREASE")
+                            console.log(song.likes--)
+                            return Object.assign({}, song, {
+                                likes: song.likes--
+                            })
+                        }
+                    } else {
+                        return song
+                    }
+                })
+            })
         default:
             return state
     }
