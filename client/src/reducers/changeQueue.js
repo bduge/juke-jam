@@ -4,10 +4,11 @@ let initialState = {
 const queueReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'ADD_SONG':
+            let songObj = action.song;
+            songObj.isLike = null; 
             return Object.assign({}, state, {
-                queue: [...state.queue, action.song],
-            })
-
+                queue: [...state.queue, songObj]
+            })    
         case 'REMOVE_SONG':
             return {
                 ...state,
@@ -25,6 +26,16 @@ const queueReducer = (state = initialState, action) => {
                         return song
                     }
                 }),
+            })
+        case 'USER_LIKE': 
+            return Object.assign({}, state, {
+                queue: state.queue.map((song) => {
+                    if(song.title === action.songTitle){
+                        return Object.assign({}, song, {
+                            isLike: action.isLike
+                        })
+                    }
+                })
             })
         case 'RESET_LIKE':
             console.log("RESET_LIKE")

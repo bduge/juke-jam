@@ -8,18 +8,23 @@ const mapStateToProps = (state) => {
 
 
 const Queue = ({queue}) => {
-    return Object.keys(queue).map((key, _) => {
-        const song = queue[key]
-        return (
-            <Song
-                key={song.title + song.artist}
-                name={song.title}
-                artist={song.artist}
-                likes={song.likes}
-                image={song.image}
-            />
-        )
-    })
+    if(queue){
+        return Object.keys(queue).map((key, _) => {
+            const song = queue[key]
+            return (
+                <Song
+                    key={song.title + song.artist}
+                    name={song.title}
+                    artist={song.artist}
+                    likes={song.likes}
+                    image={song.image}
+                />
+            )
+        })
+    } else {
+        return null
+    }
+    
 }
 
 export default connect(mapStateToProps)(Queue)
