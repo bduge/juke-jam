@@ -7,8 +7,14 @@ import DeviceModal from './deviceModal'
 import SearchBar from './searchBar'
 import Queue from './queue'
 import Player from './player'
+import { exitAction } from '../actions/actions'
+import { connect } from 'react-redux'
 
-
+const mapDispatchToProps = dispatch => {
+    return ({
+        exitAction: () => {dispatch(exitAction())}
+    })
+}
 
 class Room extends React.Component {
     constructor(props) {
@@ -33,6 +39,11 @@ class Room extends React.Component {
 
     componentWillUnmount() {
         socket.emit('request leave', this.state.roomName, null)
+    }
+
+    deleteLocalStorage = () => {
+        console.log("Clear Local Storage")
+        this.props.exitAction()
     }
 
     checkRoomCallback = (roomExist, msg) => {
@@ -75,7 +86,7 @@ class Room extends React.Component {
                 <Container className="containerStyle">
                     <div id="nav" className="navbar">
                         <Link to="/">
-                            <Button>Leave</Button>
+                            <Button onClick={this.deleteLocalStorage}>Leave</Button>
                         </Link>
                         {/* {this.state.isHost ? ( */}
                         <DeviceModal
@@ -127,4 +138,4 @@ class Room extends React.Component {
     }
 }
 
-export default withRouter(Room)
+export default connect(null, mapDispatchToProps)(withRouter(Room))

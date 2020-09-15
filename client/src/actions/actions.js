@@ -20,6 +20,20 @@ export const resetLike = (songTitle, isIncrease) => {
     }
 }
 
+export const exitAction = () => {
+    return {
+        type: 'EXIT'
+    }
+}
+
+export const userLike = (songTitle, isLike) => {
+    return {
+        type: 'USER_LIKE',
+        songTitle: songTitle,
+        isLike: isLike
+    }
+}
+
 export const setRoomName = (roomName) => {
     console.log("being called")
     console.log(roomName)
