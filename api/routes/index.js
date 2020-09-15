@@ -2,10 +2,11 @@ var express = require('express')
 var router = express.Router()
 let Room = require('../models/room')
 
-router.post('/change_like', async function(req, res){
-    console.log("CHANGELIKE")
+router.post('/change_like', async function (req, res) {
+    console.log('CHANGELIKE')
     let songTitle = req.body.songTitle
     let roomName = req.body.roomName
+
     let room = await Room.findOne({name: roomName}).exec()
     let changeVal = req.body.changeByTwo ? 2: 1
     room.song_queue.find((curSong, i) => {
@@ -14,11 +15,11 @@ router.post('/change_like', async function(req, res){
             room.save()
             console.log(room.song_queue[i])
             req.app.get('io').to(roomName).emit('changeLike', curSong)
-            res.json({ok: true, message: 'Like Changed'})
-            return 
+            res.json({ ok: true, message: 'Like Changed' })
+            return
         }
     })
-    return 
+    return
 })
 
 router.post('/add_song', async function (req, res) {
@@ -36,19 +37,20 @@ router.post('/add_song', async function (req, res) {
     if (found) {
         room.song_queue[index].likes++
         formattedSong = room.song_queue[index]
-        req.app.get('io').to(roomName).emit('addLike', formattedSong);
+        req.app.get('io').to(roomName).emit('addLike', formattedSong)
         console.log(room)
-        res.json({ok: true, message: 'Increment like'})
+        res.json({ ok: true, message: 'Increment like' })
         room.save()
-        return 
+        return
     } else {
         formattedSong = {
             title: song.title,
-            artist: song.description, 
+            artist: song.description,
             uri: song.uri,
+            song_id: song.id,
             length: song.length,
             likes: 0,
-            image: song.image
+            image: song.image,
         }
         room.song_queue.push(formattedSong)
     }
@@ -57,8 +59,7 @@ router.post('/add_song', async function (req, res) {
     room.save()
     req.app.get('io').to(roomName).emit('queue_update', formattedSong)
     res.json({ ok: true, message: 'song added' })
-    return 
+    return
 })
-
 
 module.exports = router

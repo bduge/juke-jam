@@ -150,9 +150,8 @@ router.post('/search', async function (req, res) {
     }
 })
 
-router.put('/play', async function (req, res) {
-    let result = await playSong(req.body.room, req.app.get('io'))
-    res.json(result)
+router.put('/play', function (req, res) {
+    playSong(req.body.room, req.app.get('io'), res)
 })
 
 // Get users email from spotify api
@@ -219,16 +218,15 @@ async function refresh_token(room_name) {
     return room.access_token
 }
 
-async function playSong(roomName, io) {
+async function playSong(roomName, io, client) {
     let room = await Room.findOne({ name: roomName }).exec()
     if (room.song_queue.length == 0) {
-        return { ok: true, message: 'Queue is empty' }
+        client.json({ ok: false, message: 'Queue is empty' })
     }
     let song = room.song_queue.reduce((mostLiked, song) => {
         return song.likes > mostLiked.likes ? song : mostLiked
     })
     let authToken = await refresh_token(roomName)
-    console.log(song)
     const playOptions = {
         method: 'put',
         url: 'https://api.spotify.com/v1/me/player/play',
@@ -246,13 +244,21 @@ async function playSong(roomName, io) {
     axios(playOptions)
         .then(() => {
             room.updateOne({ $pull: { song_queue: { uri: song.uri } } }).exec()
-            io.to(roomName).emit("song_played", song.uri)
-            setTimeout(() => playSong(roomName, io), song.length)
-            return { ok: true, message: 'Song played' }
+            io.to(roomName).emit('song_played', song.uri)
+            // Change from API response to socket signal to keep sending updates
+            setTimeout(() => playSong(roomName, io), song.length, res)
+            client.json({
+                ok: true,
+                message: {
+                    title: song.title,
+                    artist: song.artist,
+                    image: song.image,
+                },
+            })
         })
         .catch((error) => {
             console.log(error.response.data)
-            return { ok: false, message: error }
+            client.json({ ok: false, message: error })
         })
 }
 
