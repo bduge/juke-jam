@@ -137,5 +137,5 @@ class CreateRoom extends React.Component {
         }
     }
 }
-// export default CreateRoom
+
 export default connect(null, mapDispatchToProps)(CreateRoom)

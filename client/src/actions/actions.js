@@ -12,6 +12,14 @@ export const changeLike = (songObj) => {
     }
 }
 
+export const resetLike = (songTitle, isIncrease) => {
+    return {
+        type: 'RESET_LIKE',
+        songTitle: songTitle,
+        isIncrease: isIncrease, 
+    }
+}
+
 export const setRoomName = (roomName) => {
     console.log('being called')
     console.log(roomName)

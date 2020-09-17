@@ -11,13 +11,8 @@ import homepage from './components/homepage';
 import Room from './components/room';
 import JoinRoom from './components/joinRoom';
 import { Provider } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
-import rootReducer from './reducers/reducer'
-
-const store = createStore(
-  rootReducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  );
+import { store, persistor } from './store';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export default class App extends React.Component {
 
@@ -25,6 +20,7 @@ export default class App extends React.Component {
   render(){ 
     return(
       <Provider store={store}>
+        <PersistGate persistor={persistor}>
       <Router>
       <div>
         <Switch>
@@ -35,6 +31,7 @@ export default class App extends React.Component {
         </Switch>
       </div>
       </Router>
+        </PersistGate>
       </Provider>
     )
   }
