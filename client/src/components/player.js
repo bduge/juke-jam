@@ -12,7 +12,6 @@ const intialState = {
 }
 
 const reducerFunc = (state = intialState, action) => {
-    console.log('HELLO')
     switch (action.type) {
         case 'played':
             return {
@@ -27,6 +26,14 @@ const reducerFunc = (state = intialState, action) => {
                 ...state,
                 playing: false,
             }
+        case 'initial':
+            return {
+                ...state,
+                image: action.song.image,
+                title: action.song.title,
+                artist: action.song.artist,
+                playing: !action.song.paused,
+            }
         default:
             console.log('Invalid action')
     }
@@ -36,17 +43,38 @@ const Player = (props) => {
     const [state, dispatch] = useReducer(reducerFunc, intialState)
     const songDispatch = useDispatch()
     useEffect(() => {
-        socket.on('song_played', (songURI) => {
-            songDispatch(removeSong(songURI))
+        socket.on('song_played', (song) => {
+            songDispatch(removeSong(song.uri))
+            dispatch({
+                type: 'played',
+                image: song.image,
+                title: song.title,
+                artist: song.artist,
+            })
         })
+        let fetchOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                room: props.room,
+            }),
+        }
+        fetch('http://localhost:8000/get_current_song', fetchOptions)
+            .then((data) => data.json())
+            .then((data) => dispatch({ type: 'initial', song: data }))
     }, [])
 
-    const playSong = () => {
+    const playSong = (skip = false) => {
+        let resume = false
+        if (!skip && state.title) {
+            resume = true
+        }
         const playOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 room: props.room,
+                resume: resume,
             }),
         }
         fetch('http://localhost:8000/spotify/play', playOptions)
@@ -56,13 +84,25 @@ const Player = (props) => {
                     console.log(data.message)
                     return
                 }
-                let song = data.message
-                dispatch({
-                    type: 'played',
-                    image: song.image,
-                    title: song.title,
-                    artist: song.artist,
-                })
+            })
+            .catch((error) => console.log(error))
+    }
+
+    const pauseSong = () => {
+        const pauseOptions = {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                room: props.room,
+            }),
+        }
+        fetch('http://localhost:8000/spotify/pause', pauseOptions)
+            .then((data) => data.json())
+            .then((data) => {
+                if (!data.ok) {
+                    console.log(data.message)
+                }
+                dispatch({ type: 'paused' })
             })
             .catch((error) => console.log(error))
     }
@@ -83,14 +123,14 @@ const Player = (props) => {
                         name="pause circle outline"
                         className="playerButton"
                         size="huge"
-                        onClick={() => console.log('PAUSE')}
+                        onClick={pauseSong}
                     />
                 ) : (
                     <Icon
                         name="play circle outline"
                         className="playerButton"
                         size="huge"
-                        onClick={playSong}
+                        onClick={() => playSong(false)}
                     />
                 )}
             </div>
