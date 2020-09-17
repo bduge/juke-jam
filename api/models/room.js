@@ -2,12 +2,13 @@ var mongoose = require('mongoose')
 
 let songSchema = new mongoose.Schema({
     title: { type: String, require: true, unique: false },
-    artist: { type: String, require: true, unique: false},
+    artist: { type: String, require: true, unique: false },
     uri: { type: String, require: true, unique: true },
-    song_id: { type: String, require: true, unique: true},
+    song_id: { type: String, require: true, unique: true },
     length: { type: Number, require: true, unique: false },
     likes: { type: Number, default: 0 },
-    image: { type: String, require: true, unique: false}
+    image: { type: String, require: true, unique: false },
+    paused: { type: Boolean, default: false },
 })
 
 let roomSchema = new mongoose.Schema({
@@ -18,6 +19,7 @@ let roomSchema = new mongoose.Schema({
     token_expiry: Date,
     device_id: String,
     song_queue: [songSchema],
+    currently_playing: songSchema,
 })
 
 module.exports = mongoose.model('Room', roomSchema)
