@@ -61,7 +61,11 @@ const Player = (props) => {
         }
         fetch('http://localhost:8000/get_current_song', fetchOptions)
             .then((data) => data.json())
-            .then((data) => dispatch({ type: 'initial', song: data }))
+            .then((data) => {
+                if (data.title) {
+                    dispatch({ type: 'initial', song: data })
+                }
+            })
     }, [])
 
     const playSong = (skip = false) => {
@@ -133,6 +137,12 @@ const Player = (props) => {
                         onClick={() => playSong(false)}
                     />
                 )}
+                <Icon
+                    name="step forward"
+                    className="playerButton"
+                    size="big"
+                    onClick={() => playSong(true)}
+                />
             </div>
         </div>
     )

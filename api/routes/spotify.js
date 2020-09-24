@@ -154,7 +154,7 @@ router.put('/update_device', async function (req, res) {
             res.json({ ok: true, message: 'Transfer Request sent' })
         })
         .catch((error) => {
-            console.log(error)
+            console.log(error.response.data)
             res.json({ ok: false, message: error })
         })
 })
@@ -216,7 +216,12 @@ router.put('/pause', async function (req, res) {
     try {
         response = await axios(playingOptions)
     } catch (error) {
-        console.log(error)
+        console.log(error.response.data)
+    }
+
+    if (!response.data.is_playing) {
+        res.json({ ok: true, message: 'not playing' })
+        return
     }
     const time_remaining =
         response.data.item.duration_ms - response.data.progress_ms
@@ -226,11 +231,11 @@ router.put('/pause', async function (req, res) {
             room.currently_playing.length = time_remaining
             room.currently_playing.paused = true
             room.save()
-            res.send({ ok: true, message: 'playback paused' })
+            res.json({ ok: true, message: 'playback paused' })
         })
         .catch((error) => {
             console.log(error.response.data)
-            res.send({ ok: false, message: 'pause request failed' })
+            res.json({ ok: false, message: 'pause request failed' })
         })
 })
 
@@ -282,7 +287,6 @@ async function refresh_token(room_name) {
             body = response.data
         } catch (error) {
             console.log(error)
-            res.send('ERROR')
             return
         }
 

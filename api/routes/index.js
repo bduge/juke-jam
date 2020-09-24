@@ -64,7 +64,11 @@ router.post('/add_song', async function (req, res) {
 router.post('/get_current_song', async function(req, res) {
     let roomName = req.body.room
     let room = await Room.findOne({"name": roomName}).exec()
-    res.json(room.currently_playing)
+    if (!room.currently_playing){
+        res.json({})
+    } else {
+        res.json(room.currently_playing)
+    }
 })
 
 module.exports = router
