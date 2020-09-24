@@ -63,16 +63,19 @@ class Room extends React.Component {
             })
     }
 
+
     componentDidMount() {
         socket.emit('request join', this.state.roomName, this.checkRoomCallback)
         console.log(this.props.queue.queue.length)
         console.log(this.props.queue.queue)
         this.getCurrentRoomSongs(this.props.roomName, this.props.queue.queue)
+        window.addEventListener("beforeunload", this.deleteLocalStorage)
         // Check if redux store is missing any songs 
     }
 
     componentWillUnmount() {
         socket.emit('request leave', this.state.roomName, null)
+        window.removeEventListener("beforeunload", this.deleteLocalStorage)
     }
 
     deleteLocalStorage = () => {
