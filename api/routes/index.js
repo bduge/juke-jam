@@ -3,7 +3,6 @@ var router = express.Router()
 let Room = require('../models/room')
 
 router.post('/change_like', async function (req, res) {
-    console.log('CHANGELIKE')
     let songTitle = req.body.songTitle
     let roomName = req.body.roomName
 

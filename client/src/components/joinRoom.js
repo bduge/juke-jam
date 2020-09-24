@@ -2,12 +2,14 @@ import React from 'react'
 import { Container, Header, Input, Button, Grid } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import './styles.css'
-import { setRoomName } from '../actions/actions'
+import { setRoomName, setIsHost } from '../actions/actions'
 import { connect } from 'react-redux'
 
 const mapDispatchToProps = (dispatch) => {
     return({
-        setRoomName: (roomName) => {dispatch(setRoomName(roomName))}
+        setRoomName: (roomName) => {dispatch(setRoomName(roomName))},
+        setIsHost: (isHost) => {dispatch(setIsHost(isHost))}
+        // updateQueue: 
     })
 }
 
@@ -27,6 +29,7 @@ class JoinRoom extends React.Component {
 
     joinRoom = () => {
         this.props.setRoomName(this.state.roomName)
+        this.props.setIsHost(false)
         this.props.history.push({
             pathname: '/room/' + this.state.roomName,
             state: { isHost: false },

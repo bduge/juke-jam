@@ -1,7 +1,7 @@
 import React from 'react'
 import { Container, Header, Input, Button, Grid } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import { setRoomName } from '../actions/actions'
+import { setRoomName, setIsHost } from '../actions/actions'
 import './styles.css'
 
 const authEndpoint = 'https://accounts.spotify.com/authorize'
@@ -12,7 +12,8 @@ const scopes =
 
 const mapDispatchToProps = (dispatch) => {
     return({
-        setRoomName: (roomName) => {dispatch(setRoomName(roomName))}
+        setRoomName: (roomName) => {dispatch(setRoomName(roomName))},
+        setIsHost: (isHost) => {dispatch(setIsHost(isHost))}
     })
 }
 
@@ -60,6 +61,7 @@ class CreateRoom extends React.Component {
             .then((data) => {
                 // Handle errors (i.e. when data.ok == false)
                 console.log(data)
+                this.props.setIsHost(true);
                 this.props.history.push({
                     pathname: '/room/' + this.state.roomName,
                     state: { isHost: true },

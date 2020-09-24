@@ -14,7 +14,15 @@ const queueReducer = (state = initialState, action) => {
                 ...state,
                 queue: state.queue.filter((song) => song.uri != action.uri),
             }
-
+        case 'ADD_SONG_ARRAY':
+            let songArr = action.songArr
+            songArr.forEach((item) => {item.isLike = null})
+            console.log("THIS IS THE ACTION ARRAY")
+            console.log(action.songArr)
+            return {
+                ...state,
+                queue: state.queue.concat(songArr)
+            }
         case 'CHANGE_LIKE':
             return Object.assign({}, state, {
                 queue: state.queue.map((song) => {
@@ -28,6 +36,8 @@ const queueReducer = (state = initialState, action) => {
                 }),
             })
         case 'USER_LIKE': 
+        console.log(state.queue)
+        console.log("im here")
             return Object.assign({}, state, {
                 queue: state.queue.map((song) => {
                     if(song.title === action.songTitle){
