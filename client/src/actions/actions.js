@@ -43,6 +43,20 @@ export const setRoomName = (roomName) => {
     }
 }
 
+export const addSongArr = (songArr) => {
+    return {
+        type: "ADD_SONG_ARRAY",
+        songArr: songArr
+    }
+}
+
+export const setIsHost = (isHost) => {
+    return {
+        type: 'SET_IS_HOST',
+        isHost: isHost, 
+    }
+}
+
 export const removeSong = (songURI) => {
     console.log('Removing', songURI)
     return {

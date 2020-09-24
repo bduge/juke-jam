@@ -55,14 +55,14 @@ const Song = (props) => {
                     onClick={() => {
                         setLike(true)
                         if(isLike === null || isLike === false){
-                            songDispatch(userLike(props.name, true))
+                            // songDispatch(userLike(props.name, true))
                             if(isLike === false ){
                                 handleOnClick(true, props.name, props.roomName, true)
                             } else {
                                 handleOnClick(true, props.name, props.roomName, false)
                             }
                         } else if(isLike === true){
-                            songDispatch(userLike(props.name, null))
+                            // songDispatch(userLike(props.name, null))
                             setLike(null)
                             handleOnClick(false, props.name, props.roomName, false)
                         }
@@ -78,14 +78,14 @@ const Song = (props) => {
                     onClick={() => {
                         setLike(false)
                         if(isLike === null || isLike === true){
-                            songDispatch(userLike(props.name, false))
+                            // songDispatch(userLike(props.name, false))
                             if(isLike == true){
                                 handleOnClick(false, props.name, props.roomName, true)
                             } else {
                                 handleOnClick(false, props.name, props.roomName, false)
                             }
                         } else if(isLike == false){
-                            songDispatch(userLike(props.name, null))
+                            // songDispatch(userLike(props.name, null))
                             setLike(null)
                             handleOnClick(true, props.name, props.roomName, false)
                         }

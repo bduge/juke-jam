@@ -1,5 +1,5 @@
 import changeQueueReducer from './changeQueue';
-import roomNameReducer from './roomNameReducer'
+import {roomNameReducer, isHostReducer} from './roomNameReducer'
 import {combineReducers} from 'redux';
 import { persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
@@ -12,7 +12,8 @@ const persistConfig = {
 
 const appReducer = combineReducers({
     queue: changeQueueReducer,
-    roomName: roomNameReducer
+    roomName: roomNameReducer,
+    isHost: isHostReducer
 })
 
 const rootReducer = (state, action) => {

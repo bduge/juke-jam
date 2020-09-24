@@ -7,12 +7,20 @@ import DeviceModal from './deviceModal'
 import SearchBar from './searchBar'
 import Queue from './queue'
 import Player from './player'
-import { exitAction } from '../actions/actions'
+import { exitAction, addSongArr } from '../actions/actions'
 import { connect } from 'react-redux'
 
 const mapDispatchToProps = dispatch => {
     return ({
-        exitAction: () => {dispatch(exitAction())}
+        exitAction: () => {dispatch(exitAction())},
+        addSongArr: (songArr) => {dispatch(addSongArr(songArr))}
+    })
+}
+
+const mapStateToProps = (state) => {
+    return ({
+        queue: state.queue,
+        roomName: state.roomName
     })
 }
 
@@ -33,8 +41,34 @@ class Room extends React.Component {
         }
     }
 
+    getCurrentRoomSongs = (roomName, storeSongs) => {
+        console.log("GETTING SONGS")
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                roomName: roomName,
+                storeSongs: storeSongs
+            }),
+        }
+        fetch('http://localhost:8000/spotify/get_room_songs', requestOptions)
+            .then((data) => data.json())
+            .then((data) => {
+                console.log("Returned Song Array")
+                console.log(data.songArray)
+                this.props.addSongArr(data.songArray)
+            })
+            .catch((error) => {
+                console.log('ERROR:', error)
+            })
+    }
+
     componentDidMount() {
         socket.emit('request join', this.state.roomName, this.checkRoomCallback)
+        console.log(this.props.queue.queue.length)
+        console.log(this.props.queue.queue)
+        this.getCurrentRoomSongs(this.props.roomName, this.props.queue.queue)
+        // Check if redux store is missing any songs 
     }
 
     componentWillUnmount() {
@@ -57,7 +91,7 @@ class Room extends React.Component {
 
     saveDevice = (deviceId) => {
         const requestOptions = {
-            method: 'PUT',
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 room: this.state.roomName,
@@ -143,4 +177,4 @@ class Room extends React.Component {
     }
 }
 
-export default connect(null, mapDispatchToProps)(withRouter(Room))
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Room))
