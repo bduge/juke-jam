@@ -1,14 +1,20 @@
 let initialState = {
     queue: [],
 }
+
+const sortQueue = (song1, song2) => {
+    return song1.likes > song2.likes ? -1 : song2.likes > song1.likes ? 1 : 0
+}
+
 const queueReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'ADD_SONG':
-            let songObj = action.song;
-            songObj.isLike = null; 
+            let songObj = action.song
+            songObj.isLike = null
+            state.queue.push(songObj)
             return Object.assign({}, state, {
-                queue: [...state.queue, songObj]
-            })    
+                queue: state.queue.sort(sortQueue),
+            })
         case 'REMOVE_SONG':
             return {
                 ...state,
@@ -16,12 +22,12 @@ const queueReducer = (state = initialState, action) => {
             }
         case 'ADD_SONG_ARRAY':
             let songArr = action.songArr
-            songArr.forEach((item) => {item.isLike = null})
-            console.log("THIS IS THE ACTION ARRAY")
-            console.log(action.songArr)
+            songArr.forEach((item) => {
+                item.isLike = null
+            })
             return {
                 ...state,
-                queue: state.queue.concat(songArr)
+                queue: state.queue.concat(songArr).sort(sortQueue),
             }
         case 'CHANGE_LIKE':
             return Object.assign({}, state, {
@@ -33,40 +39,38 @@ const queueReducer = (state = initialState, action) => {
                     } else {
                         return song
                     }
-                }),
+                }).sort(sortQueue),
             })
-        case 'USER_LIKE': 
-        console.log(state.queue)
-        console.log("im here")
+        case 'USER_LIKE':
             return Object.assign({}, state, {
                 queue: state.queue.map((song) => {
-                    if(song.title === action.songTitle){
+                    if (song.title === action.songTitle) {
                         return Object.assign({}, song, {
-                            isLike: action.isLike
+                            isLike: action.isLike,
                         })
                     }
-                })
+                }).sort(sortQueue),
             })
         case 'RESET_LIKE':
-            console.log("RESET_LIKE")
+            console.log('RESET_LIKE')
             return Object.assign({}, state, {
                 queue: state.queue.map((song) => {
-                    if(song.title === action.songTitle){
-                        if(action.isIncrease){
+                    if (song.title === action.songTitle) {
+                        if (action.isIncrease) {
                             return Object.assign({}, song, {
-                                likes: song.likes++
+                                likes: song.likes++,
                             })
-                        } else if(action.isIncrease === false){
-                            console.log("DECREASE")
+                        } else if (action.isIncrease === false) {
+                            console.log('DECREASE')
                             console.log(song.likes--)
                             return Object.assign({}, song, {
-                                likes: song.likes--
+                                likes: song.likes--,
                             })
                         }
                     } else {
                         return song
                     }
-                })
+                }),
             })
         default:
             return state

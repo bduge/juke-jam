@@ -63,39 +63,38 @@ router.post('/get_token', async function (req, res) {
     })
 })
 
-
-router.post('/get_room_songs', async function (req, res){
-    let roomName = req.body.roomName
+router.post('/get_room_songs', async function (req, res) {
+    let roomName = req.body.roomName || 'test1'
     let storeSongs = req.body.storeSongs
-    let room = await Room.findOne({name: roomName}).exec()
+    let room = await Room.findOne({ name: roomName }).exec()
     let songArray = []
     let addedSongs = []
     console.log(room)
 
-    if(storeSongs.length === 0){
-        console.log("I have nothing")
+    if (storeSongs.length === 0) {
+        console.log('I have nothing')
         songArray = room.song_queue
-        res.json({ ok: true, message: "Queue Imported", songArray: songArray})
-    } else if(storeSongs.length === room.song_queue.length) {
-        console.log("I have everything i need ")
+        res.json({ ok: true, message: 'Queue Imported', songArray: songArray })
+    } else if (storeSongs.length === room.song_queue.length) {
+        console.log('I have everything i need ')
         //Queue is already updated, nothing needs to happen
-        res.json({ ok: true, message: "No Updated Needed"})
+        res.json({ ok: true, message: 'No Updated Needed' })
     } else {
         console.log("I'm missing some songs")
-        for(var i = 0; i < room.song_queue.length; i++){
-            dbSongObj = room.song_queue[i];
-            for(var j = 0; j < storeSongs.length; j++){
-                storeSongObj = storeSongs[j];
-                if(storeSongObj.title === dbSongObj.title){
-                    break;
-                } else if(j === storeSongs.length - 1){
+        for (var i = 0; i < room.song_queue.length; i++) {
+            dbSongObj = room.song_queue[i]
+            for (var j = 0; j < storeSongs.length; j++) {
+                storeSongObj = storeSongs[j]
+                if (storeSongObj.title === dbSongObj.title) {
+                    break
+                } else if (j === storeSongs.length - 1) {
                     addedSongs.push(dbSongObj)
                 }
             }
         }
-        res.json({ ok: true, message: "Updated Queue", songArray: addedSongs})
+        res.json({ ok: true, message: 'Updated Queue', songArray: addedSongs })
     }
-    return 
+    return
 })
 
 router.post('/get_devices', async function (req, res) {
@@ -132,7 +131,7 @@ router.post('/get_devices', async function (req, res) {
 })
 
 router.put('/update_device', async function (req, res) {
-    let roomName = req.body.room
+    let roomName = req.body.room || 'test1'
     let deviceId = req.body.device
     let room = await Room.findOne({ name: roomName }).exec()
     let token = await refresh_token(roomName)
@@ -188,7 +187,7 @@ router.post('/search', async function (req, res) {
 })
 
 router.put('/play', function (req, res) {
-    playSong(req.body.room, req.app.get('io'), req.body.resume, res)
+    playSong(req.body.room || 'test1', req.app.get('io'), req.body.resume, res)
 })
 
 router.put('/pause', async function (req, res) {
