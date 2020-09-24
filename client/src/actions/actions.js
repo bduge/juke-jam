@@ -64,9 +64,3 @@ export const removeSong = (songURI) => {
         uri: songURI,
     }
 }
-
-export const sortQueue = () => {
-    return {
-        type: 'SORT_QUEUE',
-    }
-}
