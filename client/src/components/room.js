@@ -94,7 +94,7 @@ class Room extends React.Component {
 
     saveDevice = (deviceId) => {
         const requestOptions = {
-            method: 'POST',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 room: this.state.roomName,

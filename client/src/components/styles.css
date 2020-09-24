@@ -73,3 +73,8 @@
     cursor: pointer;
     color: #3f3f3f;
 }
+
+.like-row {
+    display: flex;
+    align-items: center;
+}

@@ -16,13 +16,13 @@ export const resetLike = (songTitle, isIncrease) => {
     return {
         type: 'RESET_LIKE',
         songTitle: songTitle,
-        isIncrease: isIncrease, 
+        isIncrease: isIncrease,
     }
 }
 
 export const exitAction = () => {
     return {
-        type: 'EXIT'
+        type: 'EXIT',
     }
 }
 
@@ -30,7 +30,7 @@ export const userLike = (songTitle, isLike) => {
     return {
         type: 'USER_LIKE',
         songTitle: songTitle,
-        isLike: isLike
+        isLike: isLike,
     }
 }
 
@@ -45,15 +45,15 @@ export const setRoomName = (roomName) => {
 
 export const addSongArr = (songArr) => {
     return {
-        type: "ADD_SONG_ARRAY",
-        songArr: songArr
+        type: 'ADD_SONG_ARRAY',
+        songArr: songArr,
     }
 }
 
 export const setIsHost = (isHost) => {
     return {
         type: 'SET_IS_HOST',
-        isHost: isHost, 
+        isHost: isHost,
     }
 }
 
@@ -62,5 +62,11 @@ export const removeSong = (songURI) => {
     return {
         type: 'REMOVE_SONG',
         uri: songURI,
+    }
+}
+
+export const sortQueue = () => {
+    return {
+        type: 'SORT_QUEUE',
     }
 }
