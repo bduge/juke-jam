@@ -61,13 +61,12 @@ const SearchBar = (props) => {
     useEffect(() => {
         console.log("Use Effect Ran")
         socket.on('queue_update', (song) => {
-            console.log("queue updated")
-            console.log(song)
+            // console.log(song)
             songDispatch(addSong(song))
             
         })
         socket.on('changeLike', (song) => {
-            console.log(song)
+            // console.log(song)
             songDispatch(changeLike(song))
         })
     }, [])

@@ -38,10 +38,11 @@ router.post('/add_song', async function (req, res) {
     if (found) {
         room.song_queue[index].likes++
         formattedSong = room.song_queue[index]
-        req.app.get('io').to(roomName).emit('changeLike', formattedSong)
-        console.log(room)
-        res.json({ ok: true, message: 'Increment like' })
         room.save()
+        req.app.get('io').to(roomName).emit('changeLike', formattedSong)
+        // console.log(room)
+        res.json({ ok: true, message: 'Increment like' })
+        
         return
     } else {
         formattedSong = {
@@ -54,13 +55,13 @@ router.post('/add_song', async function (req, res) {
             image: song.image,
         }
         room.song_queue.push(formattedSong)
+        room.save()
+        req.app.get('io').to(roomName).emit('queue_update', formattedSong)
+        res.json({ ok: true, message: 'song added' })
+        return
     }
-    console.log('UPDATED ROOM')
-    console.log(room)
-    room.save()
-    req.app.get('io').to(roomName).emit('queue_update', formattedSong)
-    res.json({ ok: true, message: 'song added' })
-    return
+    // console.log('UPDATED ROOM')
+    // console.log(room)
 })
 
 router.post('/get_current_song', async function (req, res) {

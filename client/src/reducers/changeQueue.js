@@ -11,9 +11,10 @@ const queueReducer = (state = initialState, action) => {
         case 'ADD_SONG':
             let songObj = action.song
             songObj.isLike = null
-            state.queue.push(songObj)
+            let newQueue = [...state.queue]
+            newQueue.push(songObj)
             return Object.assign({}, state, {
-                queue: state.queue.sort(sortQueue),
+                queue: newQueue.sort(sortQueue),
             })
         case 'REMOVE_SONG':
             return {
