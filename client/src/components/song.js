@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './styles.css'
-import { Grid, Image, Icon, Button} from 'semantic-ui-react'
+import { Grid, Image, Icon, Button, Label} from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { userLike } from '../actions/actions'
@@ -50,7 +50,7 @@ const Song = (props) => {
             <Grid.Column width={12}>
                 <strong>{props.name}</strong>
                 <p>{props.artist}</p>
-                <div>
+                <div className="like-row">
                     <Button 
                     onClick={() => {
                         setLike(true)
@@ -68,11 +68,9 @@ const Song = (props) => {
                         }
                     }} 
                     icon
-                    labelPosition='right'
                     color={isLike ? "green" : "grey"}
                     >
                         <Icon colour={"green"} name="thumbs up outline" size="large" />
-                        {props.likes > 0 ? props.likes : 0}
                     </Button>
                     <Button 
                     onClick={() => {
@@ -90,13 +88,12 @@ const Song = (props) => {
                             handleOnClick(true, props.name, props.roomName, false)
                         }
                     }}
-                    labelPosition='right'
                     icon
                     color={isLike === false ? "red" : "grey"}
                     >
                         <Icon colour={"red"} name="thumbs down outline" size="large" />
-                        {props.likes < 0 ? props.likes : 0}
                     </Button>
+                    <Label size="large">{props.likes}</Label>
                 </div>
             </Grid.Column>
         </Grid>

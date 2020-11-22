@@ -3,6 +3,8 @@ var router = express.Router()
 const axios = require('axios')
 const Room = require('../models/room')
 
+let global_timer
+
 // Retrieve authorization and refresh token from backend. Store in database under room name
 router.post('/get_token', async function (req, res) {
     let code = req.body.token
@@ -61,39 +63,38 @@ router.post('/get_token', async function (req, res) {
     })
 })
 
-
-router.post('/get_room_songs', async function (req, res){
-    let roomName = req.body.roomName
+router.post('/get_room_songs', async function (req, res) {
+    let roomName = req.body.roomName || 'test1'
     let storeSongs = req.body.storeSongs
-    let room = await Room.findOne({name: roomName}).exec()
+    let room = await Room.findOne({ name: roomName }).exec()
     let songArray = []
     let addedSongs = []
     console.log(room)
 
-    if(storeSongs.length === 0){
-        console.log("I have nothing")
+    if (storeSongs.length === 0) {
+        console.log('I have nothing')
         songArray = room.song_queue
-        res.json({ ok: true, message: "Queue Imported", songArray: songArray})
-    } else if(storeSongs.length === room.song_queue.length) {
-        console.log("I have everything i need ")
+        res.json({ ok: true, message: 'Queue Imported', songArray: songArray })
+    } else if (storeSongs.length === room.song_queue.length) {
+        console.log('I have everything i need ')
         //Queue is already updated, nothing needs to happen
-        res.json({ ok: true, message: "No Updated Needed"})
+        res.json({ ok: true, message: 'No Updated Needed' })
     } else {
         console.log("I'm missing some songs")
-        for(var i = 0; i < room.song_queue.length; i++){
-            dbSongObj = room.song_queue[i];
-            for(var j = 0; j < storeSongs.length; j++){
-                storeSongObj = storeSongs[j];
-                if(storeSongObj.title === dbSongObj.title){
-                    break;
-                } else if(j === storeSongs.length - 1){
+        for (var i = 0; i < room.song_queue.length; i++) {
+            dbSongObj = room.song_queue[i]
+            for (var j = 0; j < storeSongs.length; j++) {
+                storeSongObj = storeSongs[j]
+                if (storeSongObj.title === dbSongObj.title) {
+                    break
+                } else if (j === storeSongs.length - 1) {
                     addedSongs.push(dbSongObj)
                 }
             }
         }
-        res.json({ ok: true, message: "Updated Queue", songArray: addedSongs})
+        res.json({ ok: true, message: 'Updated Queue', songArray: addedSongs })
     }
-    return 
+    return
 })
 
 router.post('/get_devices', async function (req, res) {
@@ -130,7 +131,7 @@ router.post('/get_devices', async function (req, res) {
 })
 
 router.put('/update_device', async function (req, res) {
-    let roomName = req.body.room
+    let roomName = req.body.room || 'test1'
     let deviceId = req.body.device
     let room = await Room.findOne({ name: roomName }).exec()
     let token = await refresh_token(roomName)
@@ -152,7 +153,7 @@ router.put('/update_device', async function (req, res) {
             res.json({ ok: true, message: 'Transfer Request sent' })
         })
         .catch((error) => {
-            console.log(error)
+            console.log(error.response.data)
             res.json({ ok: false, message: error })
         })
 })
@@ -186,7 +187,55 @@ router.post('/search', async function (req, res) {
 })
 
 router.put('/play', function (req, res) {
-    playSong(req.body.room, req.app.get('io'), res)
+    playSong(req.body.room || 'test1', req.app.get('io'), req.body.resume, res)
+})
+
+router.put('/pause', async function (req, res) {
+    let roomName = req.body.room
+    let room = await Room.findOne({ name: roomName }).exec()
+    if (!room.currently_playing) {
+        res.json({ ok: false, message: 'Nothing playing' })
+    }
+    let access_token = await refresh_token(roomName)
+    const pauseOptions = {
+        method: 'put',
+        url: 'https://api.spotify.com/v1/me/player/pause',
+        headers: {
+            Authorization: 'Bearer ' + access_token,
+        },
+    }
+    const playingOptions = {
+        method: 'get',
+        url: 'https://api.spotify.com/v1/me/player',
+        headers: {
+            Authorization: 'Bearer ' + access_token,
+        },
+    }
+    let response
+    try {
+        response = await axios(playingOptions)
+    } catch (error) {
+        console.log(error.response.data)
+    }
+
+    if (!response.data.is_playing) {
+        res.json({ ok: true, message: 'not playing' })
+        return
+    }
+    const time_remaining =
+        response.data.item.duration_ms - response.data.progress_ms
+    axios(pauseOptions)
+        .then(() => {
+            clearTimeout(global_timer)
+            room.currently_playing.length = time_remaining
+            room.currently_playing.paused = true
+            room.save()
+            res.json({ ok: true, message: 'playback paused' })
+        })
+        .catch((error) => {
+            console.log(error.response.data)
+            res.json({ ok: false, message: 'pause request failed' })
+        })
 })
 
 // Get users email from spotify api
@@ -237,7 +286,6 @@ async function refresh_token(room_name) {
             body = response.data
         } catch (error) {
             console.log(error)
-            res.send('ERROR')
             return
         }
 
@@ -253,16 +301,23 @@ async function refresh_token(room_name) {
     return room.access_token
 }
 
-async function playSong(roomName, io, client) {
+async function playSong(roomName, io, resume, client = null) {
     let room = await Room.findOne({ name: roomName }).exec()
-    if (room.song_queue.length == 0) {
-        client.json({ ok: false, message: 'Queue is empty' })
+    if (client === null && room.currently_playing.paused) {
+        return
+    } else if (!resume && room.song_queue.length == 0) {
+        if (client) {
+            client.json({ ok: false, message: 'Queue is empty' })
+        }
+        return
     }
-    let song = room.song_queue.reduce((mostLiked, song) => {
-        return song.likes > mostLiked.likes ? song : mostLiked
-    })
+    let song = resume
+        ? room.currently_playing
+        : room.song_queue.reduce((mostLiked, song) => {
+              return song.likes > mostLiked.likes ? song : mostLiked
+          })
     let authToken = await refresh_token(roomName)
-    const playOptions = {
+    let playOptions = {
         method: 'put',
         url: 'https://api.spotify.com/v1/me/player/play',
         headers: {
@@ -276,20 +331,35 @@ async function playSong(roomName, io, client) {
             uris: [song.uri],
         },
     }
+    if (resume) {
+        playOptions.data.uris = null
+    }
     axios(playOptions)
         .then(() => {
-            room.updateOne({ $pull: { song_queue: { uri: song.uri } } }).exec()
-            io.to(roomName).emit('song_played', song.uri)
-            // Change from API response to socket signal to keep sending updates
-            setTimeout(() => playSong(roomName, io), song.length, res)
-            client.json({
-                ok: true,
-                message: {
-                    title: song.title,
-                    artist: song.artist,
-                    image: song.image,
-                },
+            if (!resume)
+                room.updateOne({
+                    $pull: { song_queue: { uri: song.uri } },
+                }).exec()
+            song.paused = false
+            room.currently_playing = song
+            room.save()
+            io.to(roomName).emit('song_played', {
+                title: song.title,
+                artist: song.artist,
+                image: song.image,
+                uri: song.uri,
             })
+            // Change from API response to socket signal to keep sending updates
+            global_timer = setTimeout(
+                () => playSong(roomName, io, false),
+                song.length
+            )
+            if (client) {
+                client.json({
+                    ok: true,
+                    message: 'Song Played',
+                })
+            }
         })
         .catch((error) => {
             console.log(error.response.data)

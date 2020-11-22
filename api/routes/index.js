@@ -4,13 +4,15 @@ let Room = require('../models/room')
 
 router.post('/change_like', async function (req, res) {
     let songTitle = req.body.songTitle
-    let roomName = req.body.roomName
+    let roomName = req.body.roomName || 'test1'
 
-    let room = await Room.findOne({name: roomName}).exec()
-    let changeVal = req.body.changeByTwo ? 2: 1
+    let room = await Room.findOne({ name: roomName }).exec()
+    let changeVal = req.body.changeByTwo ? 2 : 1
     room.song_queue.find((curSong, i) => {
-        if(songTitle === curSong.title){
-            req.body.isLike ? room.song_queue[i].likes += changeVal : room.song_queue[i].likes -= changeVal
+        if (songTitle === curSong.title) {
+            req.body.isLike
+                ? (room.song_queue[i].likes += changeVal)
+                : (room.song_queue[i].likes -= changeVal)
             room.save()
             console.log(room.song_queue[i])
             req.app.get('io').to(roomName).emit('changeLike', curSong)
@@ -36,7 +38,7 @@ router.post('/add_song', async function (req, res) {
     if (found) {
         room.song_queue[index].likes++
         formattedSong = room.song_queue[index]
-        req.app.get('io').to(roomName).emit('addLike', formattedSong)
+        req.app.get('io').to(roomName).emit('changeLike', formattedSong)
         console.log(room)
         res.json({ ok: true, message: 'Increment like' })
         room.save()
@@ -59,6 +61,16 @@ router.post('/add_song', async function (req, res) {
     req.app.get('io').to(roomName).emit('queue_update', formattedSong)
     res.json({ ok: true, message: 'song added' })
     return
+})
+
+router.post('/get_current_song', async function (req, res) {
+    let roomName = req.body.room
+    let room = await Room.findOne({ name: roomName }).exec()
+    if (!room.currently_playing) {
+        res.json({})
+    } else {
+        res.json(room.currently_playing)
+    }
 })
 
 module.exports = router
