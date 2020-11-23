@@ -21,7 +21,7 @@ const selectSong = (songObj, roomName) => {
             roomName: roomName,
         }),
     }
-    fetch('http://localhost:8000/add_song', sendSongOptions)
+    fetch(`${process.env.REACT_APP_BASE_URL}/add_song`, sendSongOptions)
         .then((data) => data.json())
         .then((data) => console.log(data.message))
         .catch((error) => console.log(error))
@@ -87,7 +87,7 @@ const SearchBar = (props) => {
                 roomName: props.roomName,
             }),
         }
-        fetch('http://localhost:8000/spotify/search', searchOptions)
+        fetch(`${process.env.REACT_APP_BASE_URL}/spotify/search`, searchOptions)
             .then((data) => data.json())
             .then((data) => {
                 dispatch({

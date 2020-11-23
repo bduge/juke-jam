@@ -6,7 +6,7 @@ import './styles.css'
 
 const authEndpoint = 'https://accounts.spotify.com/authorize'
 const clientID = '91c3ae2425f9402eac9557c25c0080c0'
-const redirectURI = 'http://localhost:3000/create-room'
+const redirectURI = `${process.env.REACT_APP_BASE_URL}/create-room`
 const scopes =
     'user-read-private user-read-email user-read-playback-state user-modify-playback-state'
 
@@ -56,7 +56,7 @@ class CreateRoom extends React.Component {
             }),
         }
         //handle different name cases (when names have spaces, etc) might cause issues
-        fetch('http://localhost:8000/spotify/get_token', requestOptions)
+        fetch(`${process.env.REACT_APP_BASE_URL}/spotify/get_token`, requestOptions)
             .then((data) => data.json())
             .then((data) => {
                 // Handle errors (i.e. when data.ok == false)

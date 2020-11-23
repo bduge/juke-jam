@@ -59,7 +59,7 @@ const Player = (props) => {
                 room: props.room,
             }),
         }
-        fetch('http://localhost:8000/get_current_song', fetchOptions)
+        fetch(`${process.env.REACT_APP_BASE_URL}/get_current_song`, fetchOptions)
             .then((data) => data.json())
             .then((data) => {
                 if (data.title) {
@@ -81,7 +81,7 @@ const Player = (props) => {
                 resume: resume,
             }),
         }
-        fetch('http://localhost:8000/spotify/play', playOptions)
+        fetch(`${process.env.REACT_APP_BASE_URL}/spotify/play`, playOptions)
             .then((data) => data.json())
             .then((data) => {
                 if (!data.ok) {
@@ -100,7 +100,7 @@ const Player = (props) => {
                 room: props.room,
             }),
         }
-        fetch('http://localhost:8000/spotify/pause', pauseOptions)
+        fetch(`${process.env.REACT_APP_BASE_URL}/spotify/pause`, pauseOptions)
             .then((data) => data.json())
             .then((data) => {
                 if (!data.ok) {
