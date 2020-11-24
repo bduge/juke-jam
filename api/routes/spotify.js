@@ -19,7 +19,7 @@ router.post('/get_token', async function (req, res) {
         params: {
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: `${process.env.BASE_URL}/create-room`,
+            redirect_uri: `${process.env.BASE_CLIENT_URL}/create-room`,
             client_id: process.env.CLIENT_ID,
             client_secret: process.env.CLIENT_SECRET,
         },
@@ -30,7 +30,7 @@ router.post('/get_token', async function (req, res) {
         let response = await axios(token_options)
         body = response.data
     } catch (error) {
-        console.log(error)
+        console.log(error.response.data)
         res.json({ ok: false, message: error })
         return
     }
