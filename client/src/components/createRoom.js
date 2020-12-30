@@ -1,5 +1,6 @@
 import React from 'react'
-import { Container, Header, Input, Button, Grid } from 'semantic-ui-react'
+import { Container, Header, Input, Button, Grid, Label, Icon } from 'semantic-ui-react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { setRoomName, setIsHost } from '../actions/actions'
 import './styles.css'
@@ -24,6 +25,7 @@ class CreateRoom extends React.Component {
             roomName: '',
             isAuthenticated: false,
             token: null,
+            errorMessage: '',
             // add new state property for if room name already exists
         }
     }
@@ -60,6 +62,22 @@ class CreateRoom extends React.Component {
             .then((data) => data.json())
             .then((data) => {
                 // Handle errors (i.e. when data.ok == false)
+                if (!data.ok){
+                    if (data.message == "exists"){
+                        this.setState({
+                            errorMessage: "This room name already exists"
+                        })
+                    } else if (data.message == "creation"){
+                        this.setState({
+                            errorMessage: "This room could not be created"
+                        })
+                    } else if (data.message == "expired"){
+                        this.setState({
+                            errorMessage: "Spotify authorization has expired"
+                        })
+                    }
+                    return
+                }
                 console.log(data)
                 this.props.setIsHost(true);
                 this.props.history.push({
@@ -78,20 +96,26 @@ class CreateRoom extends React.Component {
         if (this.state.isAuthenticated) {
             return (
                 <Container className="containerStyle">
+                    <div id="nav" className="navbar">
+                        <Link to="/">
+                            <Button>Back</Button>
+                        </Link>
+                    </div>
                     <Header
                         className="headerText"
                         textAlign={'center'}
                         as="h1"
-                        content="Create a Room!"
+                        content="Create a Room"
                     />
-                    <Grid.Row className="centerItem">
+                    <Grid.Column className="centerItem">
+                        {this.state.errorMessage ? 
+                            (<Label basic color='red' size='large' pointing='right'>{this.state.errorMessage}</Label>) : <></>
+                        }
                         <Input
                             onChange={this.onSetName}
-                            fluid
                             className="inputStyle"
-                            size={'massive'}
-                            transparent
-                            placeholder="Click Here to Enter Room Name"
+                            size={'huge'}
+                            placeholder="Room Name"
                         />
                         <Button
                             onClick={this.sendToken}
@@ -104,20 +128,26 @@ class CreateRoom extends React.Component {
                         >
                             Create
                         </Button>
-                    </Grid.Row>
+                    </Grid.Column>
                 </Container>
             )
         } else {
             return (
                 <Container className="containerStyle">
+                 <div id="nav" className="navbar">
+                        <Link to="/">
+                            <Button>Back</Button>
+                        </Link>
+                    </div>
                     <Header
                         className="headerText"
                         textAlign={'center'}
                         as="h1"
-                        content="Login to Spotify"
+                        content="Authorize Spotify to Proceed"
                     />
-                    <Grid.Row className="centerItem">
-                        <Button>
+                    <Icon name='spotify' size='massive'/>
+                    <div className='authorize'>
+                        <Button basic color='blue'>
                             <a
                                 href={
                                     authEndpoint +
@@ -133,7 +163,7 @@ class CreateRoom extends React.Component {
                                 Login to Spotify
                             </a>
                         </Button>
-                    </Grid.Row>
+                    </div>
                 </Container>
             )
         }

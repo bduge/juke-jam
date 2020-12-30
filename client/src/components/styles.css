@@ -1,5 +1,6 @@
 .containerStyle {
     margin-top: 5% !important;
+    text-align: center;
 }
 
 .headerText {
@@ -8,10 +9,11 @@
 
 .centerItem {
     text-align: center !important;
+    padding: 6%;
 }
 
 .inputStyle {
-    padding-left: 35%;
+    padding-right: 3%;
     padding-bottom: 1em;
 }
 
@@ -31,6 +33,10 @@
 #searchWrapper {
     display: flex;
     height: 5px 30px;
+}
+
+.authorize {
+    margin: 3%;
 }
 
 .navbar {
@@ -77,4 +83,9 @@
 .like-row {
     display: flex;
     align-items: center;
+}
+
+.errorPage {
+    text-align: center;
+    padding: 20%
 }

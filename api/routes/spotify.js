@@ -11,6 +11,15 @@ router.post('/get_token', async function (req, res) {
     let code = req.body.token
     let room = req.body.roomName || 'test' // Default value for testing purposes
 
+    let roomExists = await Room.exists({ name : room})
+    if (roomExists){
+        res.json({
+            ok: false,
+            message: "exists"
+        })
+        return
+    }
+
     // Set api call options for call to spotify
     const token_options = {
         method: 'post',
@@ -30,8 +39,8 @@ router.post('/get_token', async function (req, res) {
         let response = await axios(token_options)
         body = response.data
     } catch (error) {
-        console.log(error)
-        res.json({ ok: false, message: error })
+        console.log(error.response.data)
+        res.json({ ok: false, message: 'expired' })
         return
     }
 
@@ -41,8 +50,8 @@ router.post('/get_token', async function (req, res) {
     try {
         email = await get_user_email(access_token)
     } catch (error) {
-        console.log(error)
-        res.json({ ok: false, message: error })
+        console.log(error.response.data)
+        res.json({ ok: false, message: 'creation' })
         return
     }
 
@@ -56,8 +65,8 @@ router.post('/get_token', async function (req, res) {
     })
     new_room.save((error, room) => {
         if (error) {
-            console.log(error)
-            res.json({ ok: false, message: error })
+            console.log(error.response.data)
+            res.json({ ok: false, message: 'creation' })
         } else {
             res.json({ ok: true, message: 'SUCCESS' })
         }
@@ -114,7 +123,7 @@ router.post('/get_devices', async function (req, res) {
         let response = await axios(device_options)
         body = response.data
     } catch (error) {
-        console.log(error)
+        console.log(error.response.data)
         res.json({ ok: false, message: error })
         return
     }

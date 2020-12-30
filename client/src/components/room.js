@@ -117,7 +117,15 @@ class Room extends React.Component {
         if (this.state.checkingRoom) {
             return <Loader content="Loading" active />
         } else if (!this.state.roomExist) {
-            return <h1>Error page will go here</h1> // TODO
+            return (
+                <Container className="errorPage">
+                    <h1> Uh oh, it seems that this room doesn't exist. </h1>
+                    <p> Return to the home page to create a room or join another one.</p>
+                    <Link to="/">
+                        <Button>Home</Button>
+                    </Link>
+                </Container>
+            )
         } else {
             return (
                 <Container className="containerStyle">
