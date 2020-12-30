@@ -51,7 +51,7 @@ class Room extends React.Component {
                 storeSongs: storeSongs
             }),
         }
-        fetch('http://localhost:8000/spotify/get_room_songs', requestOptions)
+        fetch(`${process.env.REACT_APP_API_URL}/spotify/get_room_songs`, requestOptions)
             .then((data) => data.json())
             .then((data) => {
                 console.log("Returned Song Array")
@@ -101,7 +101,7 @@ class Room extends React.Component {
                 device: deviceId,
             }),
         }
-        fetch('http://localhost:8000/spotify/update_device', requestOptions)
+        fetch(`${process.env.REACT_APP_API_URL}/spotify/update_device`, requestOptions)
             .then((data) => data.json())
             .then((data) => {
                 if (data.ok !== true) {

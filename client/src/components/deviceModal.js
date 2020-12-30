@@ -34,7 +34,7 @@ class DeviceModal extends React.Component {
         let children = []
         try {
             let devices = await fetch(
-                'http://localhost:8000/spotify/get_devices',
+                `${process.env.REACT_APP_API_URL}/spotify/get_devices`,
                 requestOptions
             )
             devices = await devices.json()

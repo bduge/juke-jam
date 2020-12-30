@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router()
 const axios = require('axios')
 const Room = require('../models/room')
+require('dotenv').config()
 
 let global_timer
 
@@ -18,7 +19,7 @@ router.post('/get_token', async function (req, res) {
         params: {
             grant_type: 'authorization_code',
             code: code,
-            redirect_uri: 'http://localhost:3000/create-room',
+            redirect_uri: `${process.env.BASE_CLIENT_URL}/create-room`,
             client_id: process.env.CLIENT_ID,
             client_secret: process.env.CLIENT_SECRET,
         },
@@ -399,7 +400,7 @@ router.get('/authorize_test', function (req, res) {
             process.env.CLIENT_ID +
             '&scope=' +
             encodeURIComponent(scopes) +
-            '&redirect_uri=http://localhost:8000/spotify/get_token'
+            `&redirect_uri=${process.env.BASE_URL}/spotify/get_token`
     )
 })
 

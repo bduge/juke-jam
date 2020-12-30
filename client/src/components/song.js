@@ -22,7 +22,7 @@ const handleOnClick = (like, songTitle, roomName, changeByTwo) => {
             changeByTwo: changeByTwo
         }),
     }
-    fetch('http://localhost:8000/change_like', likeOptions)
+    fetch(`${process.env.REACT_APP_API_URL}/change_like`, likeOptions)
         .then((data) => data.json())
         .then((data) => console.log(data.message))
         .catch((error) => console.log(error))
