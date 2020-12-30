@@ -3,8 +3,8 @@ var mongoose = require('mongoose')
 let songSchema = new mongoose.Schema({
     title: { type: String, require: true, unique: false },
     artist: { type: String, require: true, unique: false },
-    uri: { type: String, require: true, unique: true },
-    song_id: { type: String, require: true, unique: true },
+    uri: { type: String, require: true },
+    song_id: { type: String, require: true},
     length: { type: Number, require: true, unique: false },
     likes: { type: Number, default: 0 },
     image: { type: String, require: true, unique: false },
