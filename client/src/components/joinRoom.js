@@ -27,32 +27,35 @@ class JoinRoom extends React.Component {
         })
     }
 
-    joinRoom = () => {
-        this.props.setRoomName(this.state.roomName)
-        this.props.setIsHost(false)
-        this.props.history.push({
-            pathname: '/room/' + this.state.roomName,
-            state: { isHost: false },
-        })
-    }
+    // joinRoom = () => {
+    //     this.props.setRoomName(this.state.roomName)
+    //     this.props.setIsHost(false)
+    //     this.props.history.push({
+    //         pathname: '/room/' + this.state.roomName,
+    //         state: { isHost: false },
+    //     })
+    // }
 
     render() {
         return (
             <Container className="containerStyle">
+                <div id="nav" className="navbar">
+                    <Link to="/">
+                        <Button>Back</Button>
+                    </Link>
+                </div>
                 <Header
                     className="headerText"
                     textAlign={'center'}
                     as="h1"
-                    content="Join a Room!"
+                    content="Join a Room"
                 />
-                <Grid.Row className="centerItem">
+                <Grid.Column className="centerItem">
                     <Input
                         onChange={this.onSetName}
-                        fluid
                         className="inputStyle"
-                        size={'massive'}
-                        transparent
-                        placeholder="Click Here to Enter Room Name"
+                        size={'huge'}
+                        placeholder="Room Name"
                     />
                     <Link to ={{
                         pathname:'/room/' + this.state.roomName,
@@ -61,16 +64,17 @@ class JoinRoom extends React.Component {
                             roomName: this.state.roomName,
                         }
                     }}>
-                    <Button 
-                    className={this.state.roomName === "" ? "disabled" : ""}
-                    onClick={this.joinRoom}
-                    basic 
-                    size={"huge"} 
-                    color={"blue"}>
-                        Join 
-                    </Button>
+                        <Button 
+                            className={this.state.roomName === "" ? "disabled" : ""}
+                            onClick={this.joinRoom}
+                            basic 
+                            size={"huge"} 
+                            color={"blue"}
+                        >
+                            Join 
+                        </Button>
                     </Link>
-                </Grid.Row>
+                </Grid.Column>
             </Container>
         )
     }

@@ -147,7 +147,7 @@ class CreateRoom extends React.Component {
                     />
                     <Icon name='spotify' size='massive'/>
                     <div className='authorize'>
-                        <Button basic color='blue'>
+                        <Button basic color='blue' size='huge'>
                             <a
                                 href={
                                     authEndpoint +
