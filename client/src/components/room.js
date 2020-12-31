@@ -1,19 +1,21 @@
 import React from 'react'
 import './styles.css'
-import { Header, Container, Button, Loader, Grid } from 'semantic-ui-react'
+import { Header, Container, Button, Loader, Grid, Popup, Modal, Icon, Label } from 'semantic-ui-react'
 import { withRouter, Link } from 'react-router-dom'
 import { socket } from './socketConnection'
 import DeviceModal from './deviceModal'
 import SearchBar from './searchBar'
 import Queue from './queue'
 import Player from './player'
-import { exitAction, addSongArr } from '../actions/actions'
+import { exitAction, addSongArr, setRoomName } from '../actions/actions'
 import { connect } from 'react-redux'
+import copy from "copy-to-clipboard"
 
 const mapDispatchToProps = dispatch => {
     return ({
         exitAction: () => {dispatch(exitAction())},
-        addSongArr: (songArr) => {dispatch(addSongArr(songArr))}
+        addSongArr: (songArr) => {dispatch(addSongArr(songArr))},
+        setRoomName: (roomName) => {dispatch(setRoomName(roomName))},
     })
 }
 
@@ -27,6 +29,7 @@ const mapStateToProps = (state) => {
 class Room extends React.Component {
     constructor(props) {
         super(props)
+        const Link = window.location.href; 
         const roomId = this.props.match.params.roomId
         const getIsHost = this.props.location.state
             ? this.props.location.state.isHost
@@ -38,8 +41,17 @@ class Room extends React.Component {
             isHost: getIsHost,
             roomExist: null,
             checkingRoom: true,
+            shareableLink: Link, 
+            isDeviceConnected: false, 
+            trigPopNoDevice: false, 
         }
+        this.noDeviceHandler = this.noDeviceHandler.bind(this);
+        this.saveDevice = this.saveDevice.bind(this);
+        this.props.setRoomName(this.state.roomName);
     }
+
+
+    noDeviceHandler = (doTrig) => this.setState({trigPopNoDevice: doTrig})
 
     getCurrentRoomSongs = (roomName, storeSongs) => {
         console.log("GETTING SONGS")
@@ -68,7 +80,7 @@ class Room extends React.Component {
         socket.emit('request join', this.state.roomName, this.checkRoomCallback)
         console.log(this.props.queue.queue.length)
         console.log(this.props.queue.queue)
-        this.getCurrentRoomSongs(this.props.roomName, this.props.queue.queue)
+        this.getCurrentRoomSongs(this.state.roomName, this.props.queue.queue)
         window.addEventListener("beforeunload", this.deleteLocalStorage)
         // Check if redux store is missing any songs 
     }
@@ -90,6 +102,10 @@ class Room extends React.Component {
             : this.setState({ roomExist: false, checkingRoom: false })
     }
 
+    saveLink = () => {
+        copy(this.state.shareableLink)
+    }
+
 
 
     saveDevice = (deviceId) => {
@@ -106,12 +122,15 @@ class Room extends React.Component {
             .then((data) => {
                 if (data.ok !== true) {
                     console.log(data.message)
+                } else {
+                    this.setState({isDeviceConnected: true});
                 }
             })
             .catch((error) => {
                 console.log('ERROR:', error)
             })
     }
+    
 
     render() {
         if (this.state.checkingRoom) {
@@ -121,11 +140,42 @@ class Room extends React.Component {
         } else {
             return (
                 <Container className="containerStyle">
+                    <Modal
+                    open={this.state.trigPopNoDevice}
+                    size='mini'
+                    centered={true}
+                    >
+                        <Modal.Header style={{textAlign:'center'}}>
+                            <Icon color='blue' size='large' name="question circle outline"/>
+                        </Modal.Header>
+                        <Modal.Content>
+                            <h2 style={{textAlign:'center'}}>A Device Must First Be Connected</h2>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button
+                            content="Got it!"
+                            labelPosition='right'
+                            icon='checkmark'
+                            onClick={() => this.setState({trigPopNoDevice: false})}
+                            positive
+                            />
+                        </Modal.Actions>
+                    </Modal>
+                    <textarea style={{display:"none"}}
+                    ref={(textarea) => this.textArea = textarea}
+                    value={this.state.shareableLink}
+                    />
                     <div id="nav" className="navbar">
                         <Link to="/">
                             <Button onClick={this.deleteLocalStorage}>Leave</Button>
                         </Link>
                         {/* {this.state.isHost ? ( */}
+                            <Popup
+                            content='Link Copied'
+                            on='click'
+                            pinned
+                            trigger={<Button onClick={this.saveLink} content='Get Shareable Link' />}
+                            />
                         <DeviceModal
                             roomName={this.state.roomName}
                             saveDevice={this.saveDevice}
@@ -140,18 +190,22 @@ class Room extends React.Component {
                         as="h3"
                         content={this.state.roomName.toUpperCase()}
                     />
-                    <Grid>
-                        <Grid.Column width={6}>
-                            <Header
-                                textAlign={'left'}
+                    
+                    <Grid stackable>
+                    <Grid.Column width={5}>
+                        <Header
+                                textAlign={'center'}
                                 as="h2"
-                                content="Queue"
-                            />
-                            <div id="queue">
-                                <Queue/>
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column width={6}>
+                                content="Playing"
+                        />
+                            <Player
+                                room={this.state.roomName}
+                                isHost={this.state.isHost}
+                                deviceConnected={this.state.isDeviceConnected}
+                                triggerPopup={this.noDeviceHandler}
+                            ></Player>
+                    </Grid.Column>
+                    <Grid.Column width={6}>
                             <Header
                                 textAlign={'left'}
                                 as="h2"
@@ -161,18 +215,17 @@ class Room extends React.Component {
                                 <SearchBar roomName={this.state.roomName} />
                             </div>
 
-                        </Grid.Column>
-                        <Grid.Column width={4}>
-                        <Header
+                    </Grid.Column>
+                    <Grid.Column width={5}>
+                            <Header
                                 textAlign={'left'}
                                 as="h2"
-                                content="Playing"
+                                content="Queue"
                             />
-                            <Player
-                                room={this.state.roomName}
-                                isHost={this.state.isHost}
-                            ></Player>
-                        </Grid.Column>
+                            <div id="queue">
+                                <Queue/>
+                            </div>
+                    </Grid.Column>
                     </Grid>
                 </Container>
             )
