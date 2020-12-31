@@ -208,20 +208,20 @@ class Room extends React.Component {
                     <Grid.Column width={5}>
                         <Header
                                 textAlign={'center'}
-                                as="h2"
+                                as="h1"
                                 content="Playing"
                         />
-                            <Player
-                                room={this.state.roomName}
-                                isHost={this.state.isHost}
-                                deviceConnected={this.state.isDeviceConnected}
-                                triggerPopup={this.noDeviceHandler}
-                            ></Player>
+                        <Player
+                            room={this.state.roomName}
+                            isHost={this.state.isHost}
+                            deviceConnected={this.state.isDeviceConnected}
+                            triggerPopup={this.noDeviceHandler}
+                        ></Player>
                     </Grid.Column>
-                    <Grid.Column width={6}>
+                    <Grid.Column width={5}>
                             <Header
-                                textAlign={'left'}
-                                as="h2"
+                                textAlign={'center'}
+                                as="h1"
                                 content="Search"
                             />
                             <div id="searchWrapper">
@@ -229,10 +229,10 @@ class Room extends React.Component {
                             </div>
 
                     </Grid.Column>
-                    <Grid.Column width={5}>
+                    <Grid.Column width={6}>
                             <Header
                                 textAlign={'left'}
-                                as="h2"
+                                as="h1"
                                 content="Queue"
                             />
                             <div id="queue">

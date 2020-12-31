@@ -8,7 +8,9 @@ const mapStateToProps = (state) => {
 
 const Queue = ({ queue }) => {
     if (queue) {
-        return Object.keys(queue).map((key, _) => {
+        return (
+        <div id='queue-container'>
+        {Object.keys(queue).map((key, _) => {
             const song = queue[key]
             if (song) {
                 return (
@@ -23,7 +25,11 @@ const Queue = ({ queue }) => {
             } else {
                 return null
             }
-        })
+        })}
+        </div>
+        )
+        
+        
     } else {
         return null
     }

@@ -44,12 +44,14 @@ const Song = (props) => {
     // }
     return (
         <Grid>
-            <Grid.Column width={4}>
-                <Image src={props.image} size="tiny" />
+            <Grid.Column width={7}>
+                <Image src={props.image} size='tiny' verticalAlign='middle' centered rounded/>
             </Grid.Column>
-            <Grid.Column width={12}>
-                <strong>{props.name}</strong>
-                <p>{props.artist}</p>
+            <Grid.Column width={9}>
+                <div className='song-info'>
+                <strong style={{textOverflow: 'ellipsis'}}>{props.name}</strong>
+                <p style={{textOverflow: 'ellipsis'}}>{props.artist}</p>
+                </div>
                 <div className="like-row">
                     <Button 
                     onClick={() => {
