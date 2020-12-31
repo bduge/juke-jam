@@ -5,6 +5,7 @@
 
 .headerText {
     font-size: 3em !important;
+    margin-bottom: 0 !important;
 }
 
 .centerItem {
@@ -42,6 +43,7 @@
 .navbar {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 1em;
 }
 
 #deviceContainer {
@@ -88,4 +90,29 @@
 .errorPage {
     text-align: center;
     padding: 20%
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.linkButton {
+    margin-left: 1em !important;
+}
+
+.linkButton:hover {
+    color: #0E6EB8;
+    cursor: pointer;
+}
+
+.refreshButton {
+    float: right;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
