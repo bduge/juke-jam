@@ -134,7 +134,15 @@ const Player = (props) => {
                         name="play circle outline"
                         className="playerButton"
                         size="huge"
-                        onClick={() => playSong(false)}
+                        onClick={() => {
+                            console.log(props.deviceConnected == true)
+                            if(props.deviceConnected !== true){
+                                props.triggerPopup(true);
+                            } else {
+                                playSong(false)
+                                props.triggerPopup(false);
+                            }
+                        }}
                     />
                 )}
                 <Icon
