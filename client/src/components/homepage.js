@@ -1,10 +1,46 @@
 import React from 'react';
 import {Container, Header, Button, Grid, Icon} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
+import Particles from 'react-particles-js';
 
 export default function homepage() {
     return (
         <Container className="headerStyle" text>
+            <Particles
+            id="particles-js"
+            params={{particles: {
+                number: {
+                    value: 75,
+                },
+                shape: {
+                    type: "image",
+                    image: {
+                        src: "https://drive.google.com/uc?id=1vOyv0fH2faWdU0lI9WPSzceBKRjHB3XD"
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    anim: {
+                        enable: true
+                    }
+                },
+                size: {
+                    value: 15,
+                    random: true,
+                    anim: {
+                        enable: true,
+                        speed: 3
+                    }
+                },
+                line_linked: {
+                    enable: false
+                },
+                move: {
+                    speed: 0.2
+                }
+             }    
+        }}  
+            />
             <Header
                 className="headerTextMain"
                 textAlign={"center"}

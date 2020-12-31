@@ -35,8 +35,6 @@ export const userLike = (songTitle, isLike) => {
 }
 
 export const setRoomName = (roomName) => {
-    console.log('being called')
-    console.log(roomName)
     return {
         type: 'SET_ROOM_NAME',
         roomName: roomName,
