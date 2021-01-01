@@ -113,15 +113,15 @@ const Player = (props) => {
 
     return (
         <div className="playerContainer">
-            <div>
                 <div>
                     {!state.title ? <Label content="Nothing Playing" /> : <></>}
                     <Image src={state.image} size="medium" rounded />
                 </div>
-                <div>
+                <div style={{margin: '0.5em'}}>
                     <strong>{state.title}</strong>
                     <p>{state.artist}</p>
                 </div>
+                <div>
                 {state.playing ? (
                     <Icon
                         name="pause circle outline"
@@ -151,8 +151,8 @@ const Player = (props) => {
                     size="big"
                     onClick={() => playSong(true)}
                 />
+                </div>
             </div>
-        </div>
     )
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import './styles.css'
-import { Modal, Button, Icon } from 'semantic-ui-react'
+import { Modal, Button, Icon, Popup } from 'semantic-ui-react'
 import Device from './device'
 
 class DeviceModal extends React.Component {
@@ -54,6 +54,7 @@ class DeviceModal extends React.Component {
         return this.state.devices.map((device) => {
             return (
                 <Button
+                    style={{margin: '0.5em'}}
                     key={device.id}
                     onClick={() => {
                         this.setState({
@@ -90,13 +91,21 @@ class DeviceModal extends React.Component {
                 }
             >
                 <Modal.Header>
-                    Devices
-                    <Button
-                        onClick={this.getDevices}
-                        style={{ float: 'right' }}
-                    >
-                        Refresh
-                    </Button>
+                    <div className='modalHeader'>
+                        <div>
+                        Devices
+                        <Popup trigger={<Icon name='info circle' style={{ marginLeft: '0.5em'}}/>}content="If a device isn't appearing, make sure the Spotify app is open"/>
+                        </div>
+                        <Button
+                            onClick={this.getDevices}
+                            className='refreshButton'
+                            // style={{ float: 'right' }}
+                        >
+                            Refresh
+                        </Button>
+                    </div>
+                   
+                    
                 </Modal.Header>
                 <Modal.Content>
                     <div id="deviceContainer">{this.renderDevices()}</div>

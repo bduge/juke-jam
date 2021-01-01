@@ -38,7 +38,7 @@
 
 #searchWrapper {
     display: flex;
-    height: 5px 30px;
+    justify-content: center;
 }
 
 .authorize {
@@ -48,6 +48,7 @@
 .navbar {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 1em;
 }
 
 #deviceContainer {
@@ -75,7 +76,7 @@
     text-align: center;
     display: flex;
     flex-direction: column;
-    align-items: left;
+    align-items: center;
 }
 
 .playerButton {
@@ -86,14 +87,59 @@
     color: #3f3f3f;
 }
 
+.song-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    padding: 1em;
+}
+
 .like-row {
     display: flex;
     align-items: center;
+    justify-content: center;
+    width: 200px;
+}
+
+.song-info {
+    margin-bottom: 0.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 200px;
+    text-align: center;
 }
 
 .errorPage {
     text-align: center;
     padding: 20%
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.linkButton {
+    margin-left: 1em !important;
+}
+
+.linkButton:hover {
+    color: #0E6EB8;
+    cursor: pointer;
+}
+
+.refreshButton {
+    float: right;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 #particles-js {
@@ -103,4 +149,10 @@
     z-index: -100;
     top: 0;
     left: 0;
+}
+
+#queue-container{
+    height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
