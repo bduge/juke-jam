@@ -5,6 +5,12 @@
 
 .headerText {
     font-size: 3em !important;
+    margin-bottom: 0px !important;
+}
+
+.headerTextSecondary {
+    font-size: 2.2em !important;
+    margin-top: -20px !important;
 }
 
 .centerItem {

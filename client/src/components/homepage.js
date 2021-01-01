@@ -1,7 +1,8 @@
 import React from 'react';
-import {Container, Header, Button, Grid, Icon} from 'semantic-ui-react';
+import {Container, Header, Button, Grid, Icon, Segment, List} from 'semantic-ui-react';
 import {Link} from 'react-router-dom';
 import Particles from 'react-particles-js';
+import {Link as LinkScroll, animateScroll as scroll} from 'react-scroll';
 
 export default function homepage() {
     return (
@@ -45,7 +46,7 @@ export default function homepage() {
                 className="headerTextMain"
                 textAlign={"center"}
                 as='h1'
-                content='JUKE-JAM'
+                content='JUKE JAM'
             />
             <Header
                 className="headerTextSecondary"
@@ -71,6 +72,48 @@ export default function homepage() {
                 </Button>
                 </Link>
             </Grid.Row>
+            <Grid.Row columns={1} className="center">
+                <LinkScroll to='helpSection' spy={true} smooth={true} duration={1000}>
+                    <div style={{position:"absolute", bottom:60, left:"50%"}}>
+                        <Icon style={{position:"relative", left:"-50%"}} className="const-hvr-pulse" name="arrow alternate circle down" color="blue" size="huge"/>
+                    </div> 
+                </LinkScroll>
+            
+            </Grid.Row>
+            <Grid.Row style={{position:"absolute", bottom:"-20em", width:"100%", left:0}}>
+            <div id='helpSection'>
+            <Segment id='helpSection' placeholder inverted color='blue' textAlign='center'>
+                <Header style={{margin:'auto', width:'50%'}} size='huge' as='h2'>
+                    GETTING STARTED
+                </Header>
+                <List style={{margin:'auto', width:'50%'}} divided size='huge'>
+                    <List.Item>
+                        <List.Icon name="edit"/>
+                        <List.Content>Create a room</List.Content>
+                    </List.Item>
+                    <List.Item>
+                        <List.Icon name="keyboard"/>
+                        <List.Content>Login with your spotify credentials</List.Content>
+                    </List.Item>
+                    <List.Item>
+                        <List.Icon name="hand point right outline"/>
+                        <List.Content>Select a device to play off of</List.Content>
+                    </List.Item>
+                    <List.Item>
+                        <List.Icon name="handshake outline"/>
+                        <List.Content>Invite your friends using the shareable link or just give them the room name</List.Content>
+                    </List.Item>
+                    <List.Item>
+                        <List.Icon name="heart outline"/>
+                        <List.Content>Enjoy the music!</List.Content>
+                    </List.Item>
+                </List>
+            </Segment>
+            </div>
+
+            </Grid.Row>
+
+
         </Container>
     )
 }
