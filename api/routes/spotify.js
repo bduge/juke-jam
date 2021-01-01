@@ -321,12 +321,34 @@ async function playSong(roomName, io, resume, client = null) {
         }
         return
     }
+    let authToken = await refresh_token(roomName)
+    const playingOptions = {
+        method: 'get',
+        url: 'https://api.spotify.com/v1/me/player',
+        headers: {
+            Authorization: 'Bearer ' + authToken,
+        },
+    }
+    let response
+    try {
+        response = await axios(playingOptions)
+    } catch (error) {
+        console.log(error.response.data)
+    }
+
     let song = resume
         ? room.currently_playing
         : room.song_queue.reduce((mostLiked, song) => {
               return song.likes > mostLiked.likes ? song : mostLiked
           })
-    let authToken = await refresh_token(roomName)
+
+    let externallyPlaying = response.data.is_playing && (response.data.item.uri != song.uri)
+    if (externallyPlaying){
+        await pauseExternal(authToken)
+    }
+
+    let sameSong = response.data.item && (response.data.item.uri == song.uri)
+
     let playOptions = {
         method: 'put',
         url: 'https://api.spotify.com/v1/me/player/play',
@@ -341,7 +363,7 @@ async function playSong(roomName, io, resume, client = null) {
             uris: [song.uri],
         },
     }
-    if (resume) {
+    if (resume && !externallyPlaying && sameSong) {
         playOptions.data.uris = null
     }
     axios(playOptions)
@@ -375,6 +397,28 @@ async function playSong(roomName, io, resume, client = null) {
             console.log(error.response.data)
             client.json({ ok: false, message: error })
         })
+}
+
+async function pauseExternal(authToken){
+    const playingOptions = {
+        method: 'get',
+        url: 'https://api.spotify.com/v1/me/player',
+        headers: {
+            Authorization: 'Bearer ' + authToken,
+        },
+    }
+    const pauseOptions = {
+        method: 'put',
+        url: 'https://api.spotify.com/v1/me/player/pause',
+        headers: {
+            Authorization: 'Bearer ' + authToken,
+        },
+    }
+    try {
+        await axios(pauseOptions)
+    } catch (error) {
+        console.log(error.response.data)
+    }
 }
 
 // Helper function to format song object
