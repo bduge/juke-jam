@@ -204,7 +204,8 @@ router.put('/pause', async function (req, res) {
     let roomName = req.body.room
     let room = await Room.findOne({ name: roomName }).exec()
     if (!room.currently_playing) {
-        res.json({ ok: false, message: 'Nothing playing' })
+        res.json({ ok: true, message: 'Nothing playing' })
+        return;
     }
     let access_token = await refresh_token(roomName)
     const pauseOptions = {
@@ -232,12 +233,12 @@ router.put('/pause', async function (req, res) {
         res.json({ ok: true, message: 'not playing' })
         return
     }
-    const time_remaining =
-        response.data.item.duration_ms - response.data.progress_ms
+    // const time_remaining =
+    //     response.data.item.duration_ms - response.data.progress_ms
     axios(pauseOptions)
         .then(() => {
             clearTimeout(global_timer)
-            room.currently_playing.length = time_remaining
+            // room.currently_playing.length = time_remaining
             room.currently_playing.paused = true
             room.save()
             res.json({ ok: true, message: 'playback paused' })
@@ -342,7 +343,7 @@ async function playSong(roomName, io, resume, client = null) {
               return song.likes > mostLiked.likes ? song : mostLiked
           })
 
-    let externallyPlaying = response.data.is_playing && (response.data.item.uri != song.uri)
+    let externallyPlaying = response.data.is_playing
     if (externallyPlaying){
         await pauseExternal(authToken)
     }
@@ -363,8 +364,10 @@ async function playSong(roomName, io, resume, client = null) {
             uris: [song.uri],
         },
     }
-    if (resume && !externallyPlaying && sameSong) {
+    let songLength = song.length
+    if (resume && sameSong) {
         playOptions.data.uris = null
+        songLength = response.data.item.duration_ms - response.data.progress_ms
     }
     axios(playOptions)
         .then(() => {
@@ -382,9 +385,11 @@ async function playSong(roomName, io, resume, client = null) {
                 uri: song.uri,
             })
             // Change from API response to socket signal to keep sending updates
+            console.log("TIMEOUT SET: ", songLength)
+            clearTimeout(global_timer)
             global_timer = setTimeout(
                 () => playSong(roomName, io, false),
-                song.length
+                songLength
             )
             if (client) {
                 client.json({
