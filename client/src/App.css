@@ -1,11 +1,59 @@
+@media only screen and (min-width:319px) {
+  .headerTextMain {
+    padding-top: 2em !important;
+    font-size: 3.5em !important; 
+  }
 
-.headerTextMain {
+  .headerTextSecondary {
+    font-size: 1.75em !important; 
+  }
+
+  .helpSection {
+    position: absolute;
+    bottom: -34em;
+    width:100%;
+    left:0;
+  }
+}
+
+@media only screen and (min-width:374px) {
+  .headerTextMain {
+    padding-top: 1.5em !important;
+    font-size: 4em !important; 
+  }
+  .headerTextSecondary {
+    font-size: 2.5em !important; 
+  }
+
+  .helpSection {
+    position: absolute;
+    bottom: -28em;
+    width:100%;
+    left:0;
+  }
+}
+
+@media only screen and (min-width:426px) {
+  .headerTextMain {
+    padding-top: 0em !important;
     font-size: 6em !important; 
+  }
+  .headerTextSecondary {
+    font-size: 3em !important; 
+  }
+
+  .helpSection {
+    position: absolute;
+    bottom: -20em;
+    width:100%;
+    left:0;
+  }
 }
 
-.headerTextSecondary {
-    font-size: 3em !important; 
-}
+
+
+
+
 
 .center {
     text-align: center;
