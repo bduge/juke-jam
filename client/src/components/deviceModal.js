@@ -8,8 +8,6 @@ class DeviceModal extends React.Component {
         super(props)
         this.state = {
             open: false,
-            selectedId: this.props.active || null,
-            selectedName: this.props.activeName || null,
             devices: this.props.devices || [],
             loading: true,
         }
@@ -56,13 +54,7 @@ class DeviceModal extends React.Component {
                 <Button
                     style={{margin: '0.5em'}}
                     key={device.id}
-                    onClick={() => {
-                        this.setState({
-                            selectedId: device.id,
-                            selectedName: device.name,
-                        })
-                        this.props.saveDevice(device.id)
-                    }}
+                    onClick={() => { this.props.saveDevice(device.id, device.name) }}
                 >
                     <Device
                         key={device.id}
@@ -84,8 +76,8 @@ class DeviceModal extends React.Component {
                 trigger={
                     <Button>
                         <Icon name="mobile" />
-                        {this.state.selectedName
-                            ? 'Playing on ' + this.state.selectedName
+                        {this.props.deviceName
+                            ? 'Playing on ' + this.props.deviceName
                             : 'Devices'}
                     </Button>
                 }

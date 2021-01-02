@@ -74,4 +74,17 @@ router.post('/get_current_song', async function (req, res) {
     }
 })
 
+router.post('/get_current_device', async function(req, res) {
+    let roomName = req.body.room
+    let room = await Room.findOne({ name: roomName }).exec()
+    if (room.device_id){
+        res.json({
+            found: true,
+            deviceName: room.device_name,
+        })
+    } else {
+        res.json({ found: false })
+    }
+})
+
 module.exports = router

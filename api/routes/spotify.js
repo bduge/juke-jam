@@ -142,7 +142,8 @@ router.post('/get_devices', async function (req, res) {
 
 router.put('/update_device', async function (req, res) {
     let roomName = req.body.room || 'test1'
-    let deviceId = req.body.device
+    let deviceId = req.body.deviceId
+    let deviceName = req.body.deviceName
     let room = await Room.findOne({ name: roomName }).exec()
     let token = await refresh_token(roomName)
     let transfer_options = {
@@ -159,6 +160,7 @@ router.put('/update_device', async function (req, res) {
     axios(transfer_options)
         .then(() => {
             room.device_id = deviceId
+            room.device_name = deviceName
             room.save()
             res.json({ ok: true, message: 'Transfer Request sent' })
         })
@@ -317,8 +319,9 @@ async function playSong(roomName, io, resume, client = null) {
     if (client === null && room.currently_playing.paused) {
         return
     } else if (!resume && room.song_queue.length == 0) {
+        io.to(roomName).emit('music_stopped')
         if (client) {
-            client.json({ ok: false, message: 'Queue is empty' })
+            client.json({ ok: false, message: 'empty' })
         }
         return
     }

@@ -35,14 +35,14 @@ class Room extends React.Component {
             ? this.props.location.state.isHost
             : false
         this.checkRoomCallback = this.checkRoomCallback.bind(this)
-        this.saveDevice = this.saveDevice.bind(this)
         this.state = {
             roomName: roomId,
             isHost: getIsHost,
             roomExist: null,
             checkingRoom: true,
             shareableLink: Link, 
-            isDeviceConnected: false, 
+            isDeviceConnected: false,
+            deviceName: null,
             trigPopNoDevice: false, 
         }
         this.noDeviceHandler = this.noDeviceHandler.bind(this);
@@ -54,7 +54,6 @@ class Room extends React.Component {
     noDeviceHandler = (doTrig) => this.setState({trigPopNoDevice: doTrig})
 
     getCurrentRoomSongs = (roomName, storeSongs) => {
-        console.log("GETTING SONGS")
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -66,12 +65,31 @@ class Room extends React.Component {
         fetch(`${process.env.REACT_APP_API_URL}/spotify/get_room_songs`, requestOptions)
             .then((data) => data.json())
             .then((data) => {
-                console.log("Returned Song Array")
-                console.log(data.songArray)
                 this.props.addSongArr(data.songArray)
             })
             .catch((error) => {
                 console.log('ERROR:', error)
+            })
+    }
+
+    getCurrentDevice = (roomName) => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                room: roomName,
+            }),
+        }
+        fetch(`${process.env.REACT_APP_API_URL}/get_current_device`, requestOptions)
+            .then((data) => data.json())
+            .then((data) => {
+                if (data.found) {
+                    console.log(data.deviceName)
+                    this.setState({
+                        isDeviceConnected: true,
+                        deviceName: data.deviceName,
+                    })
+                }
             })
     }
 
@@ -81,6 +99,7 @@ class Room extends React.Component {
         console.log(this.props.queue.queue.length)
         console.log(this.props.queue.queue)
         this.getCurrentRoomSongs(this.state.roomName, this.props.queue.queue)
+        this.getCurrentDevice(this.state.roomName)
         window.addEventListener("beforeunload", this.deleteLocalStorage)
         // Check if redux store is missing any songs 
     }
@@ -108,13 +127,14 @@ class Room extends React.Component {
 
 
 
-    saveDevice = (deviceId) => {
+    saveDevice = (deviceId, deviceName) => {
         const requestOptions = {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 room: this.state.roomName,
-                device: deviceId,
+                deviceId: deviceId,
+                deviceName: deviceName,
             }),
         }
         fetch(`${process.env.REACT_APP_API_URL}/spotify/update_device`, requestOptions)
@@ -123,7 +143,10 @@ class Room extends React.Component {
                 if (data.ok !== true) {
                     console.log(data.message)
                 } else {
-                    this.setState({isDeviceConnected: true});
+                    this.setState({
+                        isDeviceConnected: true,
+                        deviceName: deviceName,
+                    });
                 }
             })
             .catch((error) => {
@@ -181,6 +204,7 @@ class Room extends React.Component {
                         <DeviceModal
                             roomName={this.state.roomName}
                             saveDevice={this.saveDevice}
+                            deviceName={this.state.deviceName}
                         />
                         ) : (
                         <></>

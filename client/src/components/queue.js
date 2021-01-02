@@ -1,6 +1,7 @@
 import React from 'react'
 import Song from './song'
 import { connect } from 'react-redux'
+import { Transition, List, Container } from 'semantic-ui-react'
 
 const mapStateToProps = (state) => {
     return state.queue
@@ -9,27 +10,27 @@ const mapStateToProps = (state) => {
 const Queue = ({ queue }) => {
     if (queue) {
         return (
-        <div id='queue-container'>
+        <Transition.Group as='div' duration={200} animation='fade'>
         {Object.keys(queue).map((key, _) => {
             const song = queue[key]
             if (song) {
                 return (
-                    <Song
-                        key={song.title + song.artist}
-                        name={song.title}
-                        artist={song.artist}
-                        likes={song.likes}
-                        image={song.image}
-                    />
+                    <Container>
+                        <Song
+                            key={song.title + song.artist}
+                            name={song.title}
+                            artist={song.artist}
+                            likes={song.likes}
+                            image={song.image}
+                        />
+                    </Container>
                 )
             } else {
                 return null
             }
         })}
-        </div>
+        </Transition.Group>
         )
-        
-        
     } else {
         return null
     }

@@ -18,6 +18,7 @@ let roomSchema = new mongoose.Schema({
     refresh_token: String,
     token_expiry: Date,
     device_id: String,
+    device_name: String,
     song_queue: [songSchema],
     currently_playing: songSchema,
 })
