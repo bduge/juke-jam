@@ -44,11 +44,11 @@ router.post('/get_token', async function (req, res) {
         return
     }
 
-    // Get email of user
+    // Get spotify id of user
     let access_token = body.access_token
-    let email
+    let user_id
     try {
-        email = await get_user_email(access_token)
+        user_id = await get_user_id(access_token)
     } catch (error) {
         console.log(error.response.data)
         res.json({ ok: false, message: 'creation' })
@@ -58,7 +58,7 @@ router.post('/get_token', async function (req, res) {
     // Create new room
     let new_room = new Room({
         name: room,
-        room_owner_email: email,
+        room_host_id: user_id,
         access_token: access_token,
         refresh_token: body.refresh_token,
         token_expiry: +new Date(Date.now() + body.expires_in * 980),
@@ -251,8 +251,60 @@ router.put('/pause', async function (req, res) {
         })
 })
 
-// Get users email from spotify api
-async function get_user_email(access_token) {
+router.post('/user_id', async function(req, res) {
+    let code = req.body.code
+    let roomName = req.body.roomName
+    let roomExists = await Room.exists({ name : roomName})
+    if (!roomExists){
+        res.json({ ok: false, message: 'invalid'})
+        return
+    }
+    let room = await Room.findOne({ name: roomName }).exec()
+
+    // Set api call options for call to spotify
+    const token_options = {
+        method: 'post',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        url: 'https://accounts.spotify.com/api/token',
+        params: {
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: `${process.env.BASE_CLIENT_URL}/join-room`,
+            client_id: process.env.CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
+        },
+    }
+    let body
+    // make spotify api call
+    try {
+        let response = await axios(token_options)
+        body = response.data
+    } catch (error) {
+        console.log(error.response.data)
+        res.json({ ok: false, message: 'expired' })
+        return
+    }
+
+    // Get spotify id of user
+    let access_token = body.access_token
+    let user_id
+    try {
+        user_id = await get_user_id(access_token)
+    } catch (error) {
+        console.log(error.response.data)
+        res.json({ ok: false, message: 'denied' })
+        return
+    }
+
+    if (room.room_host_id != user_id){
+        res.json({ ok: false, message: 'nomatch' })
+    } else {
+        res.json({ ok: true, message: 'success'})
+    }
+})
+
+// Get user id from spotify api
+async function get_user_id(access_token) {
     const user_options = {
         url: 'https://api.spotify.com/v1/me',
         headers: {
@@ -267,7 +319,7 @@ async function get_user_email(access_token) {
         return false
     }
     let body = response.data
-    return body.email
+    return body.id
 }
 
 // Check if access token is expired and refresh if necessary
