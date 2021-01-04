@@ -87,4 +87,11 @@ router.post('/get_current_device', async function(req, res) {
     }
 })
 
+router.delete('/delete_room', async function(req, res) {
+    let roomName = req.body.room
+    await Room.deleteOne({ name: roomName }).exec()
+    req.app.get('io').to(roomName).emit('roomDeleted')
+    res.json({})
+})
+
 module.exports = router

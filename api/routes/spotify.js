@@ -79,18 +79,14 @@ router.post('/get_room_songs', async function (req, res) {
     let room = await Room.findOne({ name: roomName }).exec()
     let songArray = []
     let addedSongs = []
-    console.log(room)
 
     if (storeSongs.length === 0) {
-        console.log('I have nothing')
         songArray = room.song_queue
         res.json({ ok: true, message: 'Queue Imported', songArray: songArray })
     } else if (storeSongs.length === room.song_queue.length) {
-        console.log('I have everything i need ')
         //Queue is already updated, nothing needs to happen
         res.json({ ok: true, message: 'No Updated Needed' })
     } else {
-        console.log("I'm missing some songs")
         for (var i = 0; i < room.song_queue.length; i++) {
             dbSongObj = room.song_queue[i]
             for (var j = 0; j < storeSongs.length; j++) {
