@@ -61,7 +61,7 @@ const Player = (props) => {
             })
         })
         socket.on('music_stopped', () => {
-            dispatch({  type: 'reset' })
+            dispatch({ type: 'reset' })
         })
         let fetchOptions = {
             method: 'POST',
@@ -98,7 +98,7 @@ const Player = (props) => {
                 if (!data.ok) {
                     console.log(data.message)
                     return
-                } 
+                }
             })
             .catch((error) => console.log(error))
     }
@@ -125,46 +125,55 @@ const Player = (props) => {
     return (
         <div className="playerContainer">
             <div>
-                {!state.title ?  
-                <Image src={process.env.PUBLIC_URL + '/emptyart.jpg'} size="medium" rounded /> : 
-                <Image src={state.image} size="medium" rounded />}
-                
+                {!state.title ? (
+                    <Image
+                        src={process.env.PUBLIC_URL + '/emptyart.jpg'}
+                        size="medium"
+                        rounded
+                    />
+                ) : (
+                    <Image src={state.image} size="medium" rounded />
+                )}
             </div>
-            <div style={{margin: '0.5em'}}>
+            <div style={{ margin: '0.5em' }}>
                 <strong>{state.title}</strong>
                 <p>{state.artist}</p>
             </div>
-            <div>
-            {state.playing ? (
-                <Icon
-                    name="pause circle outline"
-                    className="playerButton"
-                    size="huge"
-                    onClick={pauseSong}
-                />
+            {props.isHost ? (
+                <div>
+                    {state.playing ? (
+                        <Icon
+                            name="pause circle outline"
+                            className="playerButton"
+                            size="huge"
+                            onClick={pauseSong}
+                        />
+                    ) : (
+                        <Icon
+                            name="play circle outline"
+                            className="playerButton"
+                            size="huge"
+                            onClick={() => {
+                                console.log(props.deviceConnected == true)
+                                if (props.deviceConnected !== true) {
+                                    props.triggerPopup(true)
+                                } else {
+                                    playSong(false)
+                                    props.triggerPopup(false)
+                                }
+                            }}
+                        />
+                    )}
+                    <Icon
+                        name="step forward"
+                        className="playerButton"
+                        size="big"
+                        onClick={() => playSong(true)}
+                    />
+                </div>
             ) : (
-                <Icon
-                    name="play circle outline"
-                    className="playerButton"
-                    size="huge"
-                    onClick={() => {
-                        console.log(props.deviceConnected == true)
-                        if(props.deviceConnected !== true){
-                            props.triggerPopup(true);
-                        } else {
-                            playSong(false)
-                            props.triggerPopup(false);
-                        }
-                    }}
-                />
+                <></>
             )}
-            <Icon
-                name="step forward"
-                className="playerButton"
-                size="big"
-                onClick={() => playSong(true)}
-            />
-            </div>
         </div>
     )
 }

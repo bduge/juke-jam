@@ -93,7 +93,6 @@ class CreateRoom extends React.Component {
                     }
                     return
                 }
-                console.log(data)
                 this.props.setIsHost(true)
                 this.props.history.push({
                     pathname: '/room/' + this.state.roomName,

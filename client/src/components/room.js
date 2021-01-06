@@ -57,19 +57,18 @@ class Room extends React.Component {
 
     noDeviceHandler = (doTrig) => this.setState({trigPopNoDevice: doTrig})
 
-    getCurrentRoomSongs = (roomName, storeSongs) => {
+    getCurrentRoomSongs = (roomName) => {
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 roomName: roomName,
-                storeSongs: storeSongs
             }),
         }
-        fetch(`${process.env.REACT_APP_API_URL}/spotify/get_room_songs`, requestOptions)
+        fetch(`${process.env.REACT_APP_API_URL}/get_room_songs`, requestOptions)
             .then((data) => data.json())
             .then((data) => {
-                this.props.addSongArr(data.songArray)
+                this.props.addSongArr(data.queue)
             })
             .catch((error) => {
                 console.log('ERROR:', error)
@@ -102,7 +101,7 @@ class Room extends React.Component {
             this.setState({ trigPopDeleted: true })
         })
         socket.emit('request join', this.state.roomName, this.checkRoomCallback)
-        this.getCurrentRoomSongs(this.state.roomName, this.props.queue.queue)
+        this.getCurrentRoomSongs(this.state.roomName)
         this.getCurrentDevice(this.state.roomName)
         window.addEventListener("beforeunload", this.deleteLocalStorage)
         // Check if redux store is missing any songs 

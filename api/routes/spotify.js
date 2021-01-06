@@ -73,36 +73,6 @@ router.post('/get_token', async function (req, res) {
     })
 })
 
-router.post('/get_room_songs', async function (req, res) {
-    let roomName = req.body.roomName || 'test1'
-    let storeSongs = req.body.storeSongs
-    let room = await Room.findOne({ name: roomName }).exec()
-    let songArray = []
-    let addedSongs = []
-
-    if (storeSongs.length === 0) {
-        songArray = room.song_queue
-        res.json({ ok: true, message: 'Queue Imported', songArray: songArray })
-    } else if (storeSongs.length === room.song_queue.length) {
-        //Queue is already updated, nothing needs to happen
-        res.json({ ok: true, message: 'No Updated Needed' })
-    } else {
-        for (var i = 0; i < room.song_queue.length; i++) {
-            dbSongObj = room.song_queue[i]
-            for (var j = 0; j < storeSongs.length; j++) {
-                storeSongObj = storeSongs[j]
-                if (storeSongObj.title === dbSongObj.title) {
-                    break
-                } else if (j === storeSongs.length - 1) {
-                    addedSongs.push(dbSongObj)
-                }
-            }
-        }
-        res.json({ ok: true, message: 'Updated Queue', songArray: addedSongs })
-    }
-    return
-})
-
 router.post('/get_devices', async function (req, res) {
     let room = req.body.roomName
     let token = await refresh_token(room)
@@ -137,7 +107,7 @@ router.post('/get_devices', async function (req, res) {
 })
 
 router.put('/update_device', async function (req, res) {
-    let roomName = req.body.room || 'test1'
+    let roomName = req.body.room
     let deviceId = req.body.deviceId
     let deviceName = req.body.deviceName
     let room = await Room.findOne({ name: roomName }).exec()
@@ -190,12 +160,12 @@ router.post('/search', async function (req, res) {
         let results = await formatSongArr(response.data.tracks.items)
         res.send(results)
     } catch (error) {
-        console.log(error)
+        console.log(error.response.data)
     }
 })
 
 router.put('/play', function (req, res) {
-    playSong(req.body.room || 'test1', req.app.get('io'), req.body.resume, res)
+    playSong(req.body.room, req.app.get('io'), req.body.resume, res)
 })
 
 router.put('/pause', async function (req, res) {
@@ -311,7 +281,7 @@ async function get_user_id(access_token) {
     try {
         response = await axios(user_options)
     } catch (error) {
-        console.log(error)
+        console.log(error.response.data)
         return false
     }
     let body = response.data

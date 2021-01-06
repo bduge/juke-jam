@@ -18,7 +18,6 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
     if (action.type === "EXIT") {
-        console.log("EXITING")
         state = undefined
         localStorage.clear()
     }

@@ -11,8 +11,6 @@ const initialState = {
 }
 
 const selectSong = (songObj, roomName) => {
-    console.log("selectSong")
-    console.log(songObj)
     let sendSongOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,14 +57,10 @@ const SearchBar = (props) => {
     const songDispatch = useDispatch()
 
     useEffect(() => {
-        console.log("Use Effect Ran")
         socket.on('queue_update', (song) => {
-            // console.log(song)
             songDispatch(addSong(song))
-            
         })
         socket.on('changeLike', (song) => {
-            // console.log(song)
             songDispatch(changeLike(song))
         })
     }, [])

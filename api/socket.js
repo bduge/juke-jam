@@ -50,12 +50,6 @@ function connectSocket(server) {
                 callback(true, 'Left ' + roomName)
             }
         })
-
-        // Chat feature (testing purposes)
-        socket.on('chat message', (msg, room) => {
-            console.log(socket.rooms)
-            io.to(room).emit('chat message', msg)
-        })
     })
     return io
 }

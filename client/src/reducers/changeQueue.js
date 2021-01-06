@@ -28,7 +28,7 @@ const queueReducer = (state = initialState, action) => {
             })
             return {
                 ...state,
-                queue: state.queue.concat(songArr).sort(sortQueue),
+                queue: songArr.sort(sortQueue),
             }
         case 'CHANGE_LIKE':
             return Object.assign({}, state, {
@@ -53,7 +53,6 @@ const queueReducer = (state = initialState, action) => {
                 }).sort(sortQueue),
             })
         case 'RESET_LIKE':
-            console.log('RESET_LIKE')
             return Object.assign({}, state, {
                 queue: state.queue.map((song) => {
                     if (song.title === action.songTitle) {
@@ -62,8 +61,6 @@ const queueReducer = (state = initialState, action) => {
                                 likes: song.likes++,
                             })
                         } else if (action.isIncrease === false) {
-                            console.log('DECREASE')
-                            console.log(song.likes--)
                             return Object.assign({}, song, {
                                 likes: song.likes--,
                             })

@@ -4,7 +4,7 @@ let Room = require('../models/room')
 
 router.post('/change_like', async function (req, res) {
     let songTitle = req.body.songTitle
-    let roomName = req.body.roomName || 'test1'
+    let roomName = req.body.roomName
 
     let room = await Room.findOne({ name: roomName }).exec()
     let changeVal = req.body.changeByTwo ? 2 : 1
@@ -14,7 +14,6 @@ router.post('/change_like', async function (req, res) {
                 ? (room.song_queue[i].likes += changeVal)
                 : (room.song_queue[i].likes -= changeVal)
             room.save()
-            console.log(room.song_queue[i])
             req.app.get('io').to(roomName).emit('changeLike', curSong)
             res.json({ ok: true, message: 'Like Changed' })
             return
@@ -92,6 +91,37 @@ router.delete('/delete_room', async function(req, res) {
     await Room.deleteOne({ name: roomName }).exec()
     req.app.get('io').to(roomName).emit('roomDeleted')
     res.json({})
+})
+
+router.post('/get_room_songs', async function (req, res) {
+    let roomName = req.body.roomName
+    let room = await Room.findOne({ name: roomName }).exec()
+    let songs = room.song_queue
+    res.json({ ok: true, queue: songs })
+    // let songArray = []
+    // let addedSongs = []
+
+    // if (storeSongs.length === 0) {
+    //     songArray = room.song_queue
+    //     res.json({ ok: true, message: 'Queue Imported', songArray: songArray })
+    // } else if (storeSongs.length === room.song_queue.length) {
+    //     //Queue is already updated, nothing needs to happen
+    //     res.json({ ok: true, message: 'No Updated Needed' })
+    // } else {
+    //     for (var i = 0; i < room.song_queue.length; i++) {
+    //         dbSongObj = room.song_queue[i]
+    //         for (var j = 0; j < storeSongs.length; j++) {
+    //             storeSongObj = storeSongs[j]
+    //             if (storeSongObj.title === dbSongObj.title) {
+    //                 break
+    //             } else if (j === storeSongs.length - 1) {
+    //                 addedSongs.push(dbSongObj)
+    //             }
+    //         }
+    //     }
+    //     res.json({ ok: true, message: 'Updated Queue', songArray: addedSongs })
+    // }
+    // return
 })
 
 module.exports = router
