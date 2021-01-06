@@ -34,6 +34,14 @@ const reducerFunc = (state = intialState, action) => {
                 artist: action.song.artist,
                 playing: !action.song.paused,
             }
+        case 'reset':
+            return {
+                ...state,
+                images: null,
+                title: null,
+                artist: null,
+                playing: false,
+            }
         default:
             console.log('Invalid action')
     }
@@ -51,6 +59,9 @@ const Player = (props) => {
                 title: song.title,
                 artist: song.artist,
             })
+        })
+        socket.on('music_stopped', () => {
+            dispatch({  type: 'reset' })
         })
         let fetchOptions = {
             method: 'POST',
@@ -87,7 +98,7 @@ const Player = (props) => {
                 if (!data.ok) {
                     console.log(data.message)
                     return
-                }
+                } 
             })
             .catch((error) => console.log(error))
     }
@@ -113,46 +124,48 @@ const Player = (props) => {
 
     return (
         <div className="playerContainer">
-                <div>
-                    {!state.title ? <Label content="Nothing Playing" /> : <></>}
-                    <Image src={state.image} size="medium" rounded />
-                </div>
-                <div style={{margin: '0.5em'}}>
-                    <strong>{state.title}</strong>
-                    <p>{state.artist}</p>
-                </div>
-                <div>
-                {state.playing ? (
-                    <Icon
-                        name="pause circle outline"
-                        className="playerButton"
-                        size="huge"
-                        onClick={pauseSong}
-                    />
-                ) : (
-                    <Icon
-                        name="play circle outline"
-                        className="playerButton"
-                        size="huge"
-                        onClick={() => {
-                            console.log(props.deviceConnected == true)
-                            if(props.deviceConnected !== true){
-                                props.triggerPopup(true);
-                            } else {
-                                playSong(false)
-                                props.triggerPopup(false);
-                            }
-                        }}
-                    />
-                )}
-                <Icon
-                    name="step forward"
-                    className="playerButton"
-                    size="big"
-                    onClick={() => playSong(true)}
-                />
-                </div>
+            <div>
+                {!state.title ?  
+                <Image src={process.env.PUBLIC_URL + '/emptyart.jpg'} size="medium" rounded /> : 
+                <Image src={state.image} size="medium" rounded />}
+                
             </div>
+            <div style={{margin: '0.5em'}}>
+                <strong>{state.title}</strong>
+                <p>{state.artist}</p>
+            </div>
+            <div>
+            {state.playing ? (
+                <Icon
+                    name="pause circle outline"
+                    className="playerButton"
+                    size="huge"
+                    onClick={pauseSong}
+                />
+            ) : (
+                <Icon
+                    name="play circle outline"
+                    className="playerButton"
+                    size="huge"
+                    onClick={() => {
+                        console.log(props.deviceConnected == true)
+                        if(props.deviceConnected !== true){
+                            props.triggerPopup(true);
+                        } else {
+                            playSong(false)
+                            props.triggerPopup(false);
+                        }
+                    }}
+                />
+            )}
+            <Icon
+                name="step forward"
+                className="playerButton"
+                size="big"
+                onClick={() => playSong(true)}
+            />
+            </div>
+        </div>
     )
 }
 

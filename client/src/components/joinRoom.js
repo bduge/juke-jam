@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { Container, Header, Input, Button, Grid, Modal, Icon, Segment, List} from 'semantic-ui-react'
 import { withRouter, Link } from 'react-router-dom'
 import './styles.css'
@@ -33,6 +34,46 @@ class JoinRoom extends React.Component {
         this.state = {
             roomName: '',
             authUserModal: false,
+            errorMessage: '',
+        }
+    }
+
+    componentDidMount() {
+        const params = new URLSearchParams(window.location.search)
+        if (params.has('code')) {
+            let code = params.get('code')
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code: code,
+                    roomName: this.state.roomName,
+                }),
+            }
+            fetch(`${process.env.REACT_APP_API_URL}/spotify/user_id`, requestOptions)
+                .then(data => data.json())
+                .then((data) => {
+                    if (!data.ok){
+                        if (data.message == "invalid"){
+                            this.setState({ errorMessage: "Room doesn't exist" })
+                        } else if (data.message == "denied"){
+                            this.setState({
+                                errorMessage: "Account could not be authorized"
+                            })
+                        } else if (data.message == "expired"){
+                            this.setState({
+                                errorMessage: "Spotify authorization has expired"
+                            })
+                        }
+                        return
+                    }
+                    this.props.setRoomName(this.state.roomName)
+                    this.props.setIsHost(true)
+                    this.props.history.push({
+                        pathname: '/room/' + this.state.roomName,
+                        state: { isHost: true },
+                    })
+                })
         }
     }
 
@@ -66,6 +107,9 @@ class JoinRoom extends React.Component {
                     content="Join a Room"
                 />
                 <Grid.Column className="centerItem">
+                    {this.state.errorMessage ? 
+                        (<Label basic color='red' size='large' pointing='right'>{this.state.errorMessage}</Label>) : <></>
+                    }
                     <Input
                         onChange={this.onSetName}
                         className="inputStyle"

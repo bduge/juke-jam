@@ -13,11 +13,12 @@ let songSchema = new mongoose.Schema({
 
 let roomSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true },
-    room_owner_email: { type: String, require: true },
+    room_host_id: { type: String, require: true },
     access_token: String,
     refresh_token: String,
     token_expiry: Date,
     device_id: String,
+    device_name: String,
     song_queue: [songSchema],
     currently_playing: songSchema,
 })
