@@ -274,6 +274,10 @@ class Room extends React.Component {
                     value={this.state.shareableLink}
                     />
                     <div id="nav" className="navbar">
+
+                        <Link to="/">
+                            <Button icon onClick={this.deleteLocalStorage}><Icon name='hand victory'/>Leave</Button>
+                        </Link>
                         <Button onClick={() => {
                             if (this.state.isHost){
                                 this.setState({trigPopLeaveWarning: true})
@@ -281,6 +285,7 @@ class Room extends React.Component {
                                 this.leaveRoom()
                             }
                         }}>Leave</Button>
+
                         {this.state.isHost ? (
                         <DeviceModal
                             roomName={this.state.roomName}
