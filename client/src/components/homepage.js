@@ -43,16 +43,16 @@ export default function homepage() {
         }}  
             />
             <Header
-                className="headerTextMain"
+                className="headerTextMain noselect"
                 textAlign={"center"}
                 as='h1'
                 content='JUKE JAM'
             />
             <Header
-                className="headerTextSecondary"
+                className="headerTextSecondary noselect"
                 textAlign={"center"}
                 as="h2"
-                content="Never Stop the Music"
+                content="Share the Love of Music"
             />
             <Grid.Row columns={2} className="center">
                 <Link to="/create-room">
@@ -93,19 +93,27 @@ export default function homepage() {
                     </List.Item>
                     <List.Item>
                         <List.Icon name="keyboard"/>
-                        <List.Content style={{textAlign:'left'}}>Login with your spotify credentials</List.Content>
+                        <List.Content style={{textAlign:'left'}}>Login using your Spotify credentials</List.Content>
                     </List.Item>
                     <List.Item>
                         <List.Icon name="hand point right outline"/>
-                        <List.Content style={{textAlign:'left'}}>Select a device to play off of</List.Content>
+                        <List.Content style={{textAlign:'left'}}>Select a device to play from</List.Content>
                     </List.Item>
                     <List.Item>
                         <List.Icon name="handshake outline"/>
-                        <List.Content style={{textAlign:'left'}}>Invite your friends using the shareable link or just give them the room name</List.Content>
+                        <List.Content style={{textAlign:'left'}}>Invite your friends using the shareable link</List.Content>
+                    </List.Item>
+                    <List.Item>
+                        <List.Icon name="magnify"/>
+                        <List.Content style={{textAlign:'left'}}>Add songs to the queue</List.Content>
+                    </List.Item>
+                    <List.Item>
+                        <List.Icon name="thumbs up outline"/>
+                        <List.Content style={{textAlign:'left'}}>Everyone votes to decide the top songs</List.Content>
                     </List.Item>
                     <List.Item>
                         <List.Icon name="heart outline"/>
-                        <List.Content style={{textAlign:'left'}}>Enjoy the music!</List.Content>
+                        <List.Content style={{textAlign:'left'}}>Enjoy music together!</List.Content>
                     </List.Item>
                 </List>
             </Segment>

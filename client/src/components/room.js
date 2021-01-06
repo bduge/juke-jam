@@ -254,7 +254,7 @@ class Room extends React.Component {
                             <Icon color='blue' size='large' name="delete"/>
                         </Modal.Header>
                         <Modal.Content>
-                            <h2 style={{textAlign:'center'}}>The host has deleted this room.</h2>
+                            <h2 style={{textAlign:'center'}}>The host has deleted this room</h2>
                         </Modal.Content>
                         <Modal.Actions>
                             <Button
@@ -341,7 +341,7 @@ class Room extends React.Component {
                                 as="h1"
                                 content="Queue"
                             />
-                            <div id="queue">
+                            <div id="queue-container">
                                 <Queue/>
                             </div>
                     </Grid.Column>

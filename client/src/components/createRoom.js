@@ -1,5 +1,14 @@
 import React from 'react'
-import { Container, Header, Input, Button, Grid, Label, Icon } from 'semantic-ui-react'
+import {
+    Container,
+    Header,
+    Input,
+    Button,
+    Grid,
+    Label,
+    Icon,
+    Popup,
+} from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { setRoomName, setIsHost } from '../actions/actions'
@@ -12,10 +21,14 @@ const scopes =
     'user-read-private user-read-email user-read-playback-state user-modify-playback-state'
 
 const mapDispatchToProps = (dispatch) => {
-    return({
-        setRoomName: (roomName) => {dispatch(setRoomName(roomName))},
-        setIsHost: (isHost) => {dispatch(setIsHost(isHost))}
-    })
+    return {
+        setRoomName: (roomName) => {
+            dispatch(setRoomName(roomName))
+        },
+        setIsHost: (isHost) => {
+            dispatch(setIsHost(isHost))
+        },
+    }
 }
 
 class CreateRoom extends React.Component {
@@ -57,28 +70,31 @@ class CreateRoom extends React.Component {
             }),
         }
         //handle different name cases (when names have spaces, etc) might cause issues
-        fetch(`${process.env.REACT_APP_API_URL}/spotify/get_token`, requestOptions)
+        fetch(
+            `${process.env.REACT_APP_API_URL}/spotify/get_token`,
+            requestOptions
+        )
             .then((data) => data.json())
             .then((data) => {
                 // Handle errors (i.e. when data.ok == false)
-                if (!data.ok){
-                    if (data.message == "exists"){
+                if (!data.ok) {
+                    if (data.message == 'exists') {
                         this.setState({
-                            errorMessage: "This room name already exists"
+                            errorMessage: 'This room name already exists',
                         })
-                    } else if (data.message == "creation"){
+                    } else if (data.message == 'creation') {
                         this.setState({
-                            errorMessage: "This room could not be created"
+                            errorMessage: 'This room could not be created',
                         })
-                    } else if (data.message == "expired"){
+                    } else if (data.message == 'expired') {
                         this.setState({
-                            errorMessage: "Spotify authorization has expired"
+                            errorMessage: 'Spotify authorization has expired',
                         })
                     }
                     return
                 }
                 console.log(data)
-                this.props.setIsHost(true);
+                this.props.setIsHost(true)
                 this.props.history.push({
                     pathname: '/room/' + this.state.roomName,
                     state: { isHost: true },
@@ -89,7 +105,6 @@ class CreateRoom extends React.Component {
             })
         //Create new socket channel (room)
     }
-
 
     render() {
         if (this.state.isAuthenticated) {
@@ -107,9 +122,18 @@ class CreateRoom extends React.Component {
                         content="Create a Room"
                     />
                     <Grid.Column className="centerItem">
-                        {this.state.errorMessage ? 
-                            (<Label basic color='red' size='large' pointing='right'>{this.state.errorMessage}</Label>) : <></>
-                        }
+                        {this.state.errorMessage ? (
+                            <Label
+                                basic
+                                color="red"
+                                size="large"
+                                pointing="right"
+                            >
+                                {this.state.errorMessage}
+                            </Label>
+                        ) : (
+                            <></>
+                        )}
                         <Input
                             onChange={this.onSetName}
                             className="inputStyle"
@@ -133,7 +157,7 @@ class CreateRoom extends React.Component {
         } else {
             return (
                 <Container className="containerStyle">
-                 <div id="nav" className="navbar">
+                    <div id="nav" className="navbar">
                         <Link to="/">
                             <Button>Back</Button>
                         </Link>
@@ -142,11 +166,15 @@ class CreateRoom extends React.Component {
                         className="headerText"
                         textAlign={'center'}
                         as="h1"
-                        content="Authorize Spotify to Proceed"
+                        content='Authorize Spotify to Proceed'
                     />
-                    <Icon name='spotify' size='massive'/>
-                    <div className='authorize'>
-                        <Button basic color='blue' size='huge'>
+                    <Icon
+                        name="spotify"
+                        size="massive"
+                        className="spotifylogo"
+                    />
+                    <div className="authorize authorizeHeader">
+                        <Button basic color="blue" size="huge">
                             <a
                                 href={
                                     authEndpoint +
@@ -162,6 +190,16 @@ class CreateRoom extends React.Component {
                                 Login to Spotify
                             </a>
                         </Button>
+                        <Popup
+                            trigger={
+                                <Icon
+                                    name="info circle"
+                                    style={{ marginLeft: '0.5em' }}
+                                    size="big"
+                                />
+                            }
+                            content="The room will play music using your account, but can be deleted any time."
+                        />
                     </div>
                 </Container>
             )
