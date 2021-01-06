@@ -1,9 +1,16 @@
 import React from 'react'
-import { Container, Header, Input, Button, Grid } from 'semantic-ui-react'
-import { Link } from 'react-router-dom'
+import { Container, Header, Input, Button, Grid, Modal, Icon, Segment, List} from 'semantic-ui-react'
+import { withRouter, Link } from 'react-router-dom'
 import './styles.css'
 import { setRoomName, setIsHost } from '../actions/actions'
 import { connect } from 'react-redux'
+import {Link as LinkScroll, animateScroll as scroll} from 'react-scroll';
+
+const authEndpoint = 'https://accounts.spotify.com/authorize'
+const clientID = '91c3ae2425f9402eac9557c25c0080c0'
+const redirectURI = `${process.env.REACT_APP_BASE_URL}/join-room`
+const scopes =
+    'user-read-private user-read-email user-read-playback-state user-modify-playback-state'
 
 const mapDispatchToProps = (dispatch) => {
     return({
@@ -13,11 +20,19 @@ const mapDispatchToProps = (dispatch) => {
     })
 }
 
+const mapStateToProps = (state) => {
+    return({
+        roomName: state.roomName
+    })
+}
+
+
 class JoinRoom extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             roomName: '',
+            authUserModal: false,
         }
     }
 
@@ -25,16 +40,16 @@ class JoinRoom extends React.Component {
         this.setState({
             roomName: value,
         })
+        this.props.setRoomName(value);
     }
 
-    // joinRoom = () => {
-    //     this.props.setRoomName(this.state.roomName)
-    //     this.props.setIsHost(false)
-    //     this.props.history.push({
-    //         pathname: '/room/' + this.state.roomName,
-    //         state: { isHost: false },
-    //     })
-    // }
+    joinRoomFunc = () => {
+        this.props.setIsHost(false)
+        this.props.history.push({
+            pathname: '/room/' + this.state.roomName,
+            state: { isHost: false },
+        })
+    }
 
     render() {
         return (
@@ -57,27 +72,92 @@ class JoinRoom extends React.Component {
                         size={'huge'}
                         placeholder="Room Name"
                     />
-                    <Link to ={{
-                        pathname:'/room/' + this.state.roomName,
-                        state:{
-                            isHost : false, 
-                            roomName: this.state.roomName,
-                        }
-                    }}>
+      
                         <Button 
-                            className={this.state.roomName === "" ? "disabled" : ""}
-                            onClick={this.joinRoom}
-                            basic 
-                            size={"huge"} 
-                            color={"blue"}
+                        style={{
+                            pointerEvents: this.state.roomName === "" ? 'none' : 'auto',
+                            opacity : this.state.roomName === "" ? '0.4' : '1'
+                        }}
+                        onClick={this.joinRoomFunc}
+                        basic 
+                        size={"huge"} 
+                        color={"blue"}
                         >
                             Join 
                         </Button>
-                    </Link>
+                        <Modal
+                        onClose={() => {this.setState({authUserModal: false})}}
+                        onOpen={() => {this.setState({authUserModal: true})}}
+                        open={this.state.authUserModal}
+                        trigger={
+                        <Button
+                        style={{
+                            opacity : this.state.roomName === "" ? '0.4' : '1',
+                            pointerEvents: this.state.roomName === "" ? 'none' : 'auto'
+                        }}
+                        // onClick={this.props.setRoomName(this.state.roomName)}
+                        basic 
+                        size={"huge"} 
+                        color={"green"} 
+                        >
+                            Join as Host
+                        </Button>}
+                        >
+                            <Modal.Content>
+                                <Container className="containerStyle">
+                                    <Header
+                                        className="headerText"
+                                        textAlign={'center'}
+                                        as="h1"
+                                        content="Authorize Spotify to Proceed"
+                                    />
+                                    <Icon name='spotify' size='massive' />
+                                    <div className='authorize'>
+                                        <Button basic color='blue' size='huge'>
+                                            <a
+                                                href={
+                                                    authEndpoint +
+                                                    '?response_type=code' +
+                                                    '&client_id=' +
+                                                    clientID +
+                                                    '&scope=' +
+                                                    encodeURIComponent(scopes) +
+                                                    '&redirect_uri=' +
+                                                    encodeURIComponent(redirectURI)
+                                                }
+                                            >
+                                                Login to Spotify
+                                            </a>
+                                        </Button>
+                                    </div>
+                                </Container>
+                            </Modal.Content>
+                        </Modal>
                 </Grid.Column>
+                <Grid.Row columns={1} className="center">
+                <LinkScroll to='helpSection' spy={true} smooth={true} duration={1000}>
+                    <div style={{position:"absolute", bottom:60, left:"50%"}}>
+                        <Icon style={{position:"relative", left:"-50%"}} className="const-hvr-pulse" name="question circle outline" color="blue" size="huge"/>
+                    </div> 
+                </LinkScroll>
+            
+            </Grid.Row>
+            <Grid.Row className='helpSection'>
+            <div id='helpSection'>
+            <Segment id='helpSection' placeholder inverted color='blue' textAlign='center'>
+                <Header size='huge' as='h2'>
+                    Help Guide
+                </Header>
+                <Header.Subheader>
+                    If the host accidentally left the room, they can join the same room as the host again here
+                </Header.Subheader>
+            </Segment>
+            </div>
+
+            </Grid.Row>
             </Container>
         )
     }
 }
 
-export default connect(null, mapDispatchToProps)(JoinRoom)
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(JoinRoom))

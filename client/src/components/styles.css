@@ -72,6 +72,11 @@
     background-color: white;
 }
 
+.disabled2 {
+    pointer-events: none !important;
+    color: green !important;
+}
+
 .playerContainer {
     text-align: center;
     display: flex;

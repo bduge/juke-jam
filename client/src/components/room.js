@@ -175,7 +175,7 @@ class Room extends React.Component {
                     />
                     <div id="nav" className="navbar">
                         <Link to="/">
-                            <Button onClick={this.deleteLocalStorage}>Leave</Button>
+                            <Button icon onClick={this.deleteLocalStorage}><Icon name='hand victory'/>Leave</Button>
                         </Link>
                         {this.state.isHost ? (
                         <DeviceModal

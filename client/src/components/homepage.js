@@ -75,7 +75,7 @@ export default function homepage() {
             <Grid.Row columns={1} className="center">
                 <LinkScroll to='helpSection' spy={true} smooth={true} duration={1000}>
                     <div style={{position:"absolute", bottom:60, left:"50%"}}>
-                        <Icon style={{position:"relative", left:"-50%"}} className="const-hvr-pulse" name="arrow alternate circle down" color="blue" size="huge"/>
+                        <Icon style={{position:"relative", left:"-50%"}} className="const-hvr-pulse" name="question circle outline" color="blue" size="huge"/>
                     </div> 
                 </LinkScroll>
             
