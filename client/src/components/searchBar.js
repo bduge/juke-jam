@@ -60,8 +60,8 @@ const SearchBar = (props) => {
         socket.on('queue_update', (song) => {
             songDispatch(addSong(song))
         })
-        socket.on('changeLike', (song) => {
-            songDispatch(changeLike(song))
+        socket.on('changeLike', (song, isLike) => {
+            songDispatch(changeLike(song, isLike))
         })
     }, [])
 

@@ -22,6 +22,7 @@ const Queue = ({ queue }) => {
                             artist={song.artist}
                             likes={song.likes}
                             image={song.image}
+                            isLike={song.isLike}
                         />
                     </Container>
                 )

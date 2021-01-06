@@ -36,6 +36,7 @@ const queueReducer = (state = initialState, action) => {
                     if (song.title === action.song.title) {
                         return Object.assign({}, song, {
                             likes: action.song.likes,
+                            isLike: action.isLike
                         })
                     } else {
                         return song
@@ -59,10 +60,12 @@ const queueReducer = (state = initialState, action) => {
                         if (action.isIncrease) {
                             return Object.assign({}, song, {
                                 likes: song.likes++,
+                                isLike: true
                             })
                         } else if (action.isIncrease === false) {
                             return Object.assign({}, song, {
                                 likes: song.likes--,
+                                isLike: false
                             })
                         }
                     } else {

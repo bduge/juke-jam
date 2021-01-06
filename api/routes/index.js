@@ -14,7 +14,7 @@ router.post('/change_like', async function (req, res) {
                 ? (room.song_queue[i].likes += changeVal)
                 : (room.song_queue[i].likes -= changeVal)
             room.save()
-            req.app.get('io').to(roomName).emit('changeLike', curSong)
+            req.app.get('io').to(roomName).emit('changeLike', curSong, req.body.isLike)
             res.json({ ok: true, message: 'Like Changed' })
             return
         }
@@ -38,7 +38,7 @@ router.post('/add_song', async function (req, res) {
         room.song_queue[index].likes++
         formattedSong = room.song_queue[index]
         room.save()
-        req.app.get('io').to(roomName).emit('changeLike', formattedSong)
+        req.app.get('io').to(roomName).emit('changeLike', formattedSong, null)
         // console.log(room)
         res.json({ ok: true, message: 'Increment like' })
         

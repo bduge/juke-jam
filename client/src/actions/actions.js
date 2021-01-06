@@ -5,10 +5,11 @@ export const addSong = (songObj) => {
     }
 }
 
-export const changeLike = (songObj) => {
+export const changeLike = (songObj, isLike) => {
     return {
         type: 'CHANGE_LIKE',
         song: songObj,
+        isLike: isLike,
     }
 }
 

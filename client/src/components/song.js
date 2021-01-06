@@ -29,7 +29,7 @@ const handleOnClick = (like, songTitle, roomName, changeByTwo) => {
 
 
 const Song = (props) => {
-    const [isLike, setLike] = useState(null);
+    const [isLike, setLike] = useState(props.isLike);
     const songDispatch = useDispatch();
     // window.onbeforeunload = (e) => {
     //     if(isLike){
