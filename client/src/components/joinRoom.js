@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Container, Header, Input, Button, Grid, Modal, Icon, Segment, List} from 'semantic-ui-react'
+import { Container, Header, Input, Button, Grid, Modal, Icon, Segment, Label} from 'semantic-ui-react'
 import { withRouter, Link } from 'react-router-dom'
 import './styles.css'
 import { setRoomName, setIsHost } from '../actions/actions'

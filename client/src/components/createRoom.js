@@ -6,7 +6,7 @@ import { setRoomName, setIsHost } from '../actions/actions'
 import './styles.css'
 
 const authEndpoint = 'https://accounts.spotify.com/authorize'
-const clientID = `${process.env.REACT_APP_CLIENT_ID}`
+const clientID = '91c3ae2425f9402eac9557c25c0080c0'
 const redirectURI = `${process.env.REACT_APP_BASE_URL}/create-room`
 const scopes =
     'user-read-private user-read-email user-read-playback-state user-modify-playback-state'
