@@ -26,7 +26,6 @@ class CreateRoom extends React.Component {
             isAuthenticated: false,
             token: null,
             errorMessage: '',
-            // add new state property for if room name already exists
         }
     }
 

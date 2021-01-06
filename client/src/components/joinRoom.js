@@ -47,7 +47,7 @@ class JoinRoom extends React.Component {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     code: code,
-                    roomName: this.state.roomName,
+                    roomName: this.props.roomName,
                 }),
             }
             fetch(`${process.env.REACT_APP_API_URL}/spotify/user_id`, requestOptions)
@@ -67,10 +67,10 @@ class JoinRoom extends React.Component {
                         }
                         return
                     }
-                    this.props.setRoomName(this.state.roomName)
+                    this.props.setRoomName(this.props.roomName)
                     this.props.setIsHost(true)
                     this.props.history.push({
-                        pathname: '/room/' + this.state.roomName,
+                        pathname: '/room/' + this.props.roomName,
                         state: { isHost: true },
                     })
                 })
