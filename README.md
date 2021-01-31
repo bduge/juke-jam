@@ -1,4 +1,6 @@
-# juke-jam
+# juke-jam 
+
+Deployed at [juke-jam.com]!!!
 
 Tired of asking your friend to queue your favourite songs? Juke Jam is the best way to host a party! Juke Jam integrates with Spotify's API to control your music while allowing you to add songs into a public queue. Everyone can upvote or downvote tracks in the queue to influence which song is played next!
 
