@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import './styles.css'
 import { Grid, Image, Icon, Button, Label} from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import { useDispatch } from 'react-redux'
-import { userLike } from '../actions/actions'
 
 const mapStateToProps = (state) => {
     return ({
@@ -12,6 +10,7 @@ const mapStateToProps = (state) => {
 }
 
 const handleOnClick = (like, songTitle, roomName, changeByTwo) => {
+    // If a song is given the opposite rating, it must change by 2
     let likeOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -30,16 +29,7 @@ const handleOnClick = (like, songTitle, roomName, changeByTwo) => {
 
 const Song = (props) => {
     const [isLike, setLike] = useState(props.isLike);
-    const songDispatch = useDispatch();
-    // window.onbeforeunload = (e) => {
-    //     if(isLike){
-    //         songDispatch(resetLike(props.name, false))
-    //         handleOnClick(false, props.name, props.roomName, false)
-    //     } else if(isLike === false){
-    //         songDispatch(resetLike(props.name, true))
-    //         handleOnClick(true, props.name, props.roomName, false)
-    //     }
-    // }
+
     return (
         <Grid>
             <Grid.Column width={7}>
@@ -55,14 +45,12 @@ const Song = (props) => {
                     onClick={() => {
                         setLike(true)
                         if(isLike === null || isLike === false){
-                            // songDispatch(userLike(props.name, true))
                             if(isLike === false){
                                 handleOnClick(true, props.name, props.roomName, true)
                             } else {
                                 handleOnClick(true, props.name, props.roomName, false)
                             }
                         } else if(isLike === true){
-                            // songDispatch(userLike(props.name, null))
                             setLike(null)
                             handleOnClick(false, props.name, props.roomName, false)
                         }
@@ -76,14 +64,12 @@ const Song = (props) => {
                     onClick={() => {
                         setLike(false)
                         if(isLike === null || isLike === true){
-                            // songDispatch(userLike(props.name, false))
                             if(isLike == true){
                                 handleOnClick(false, props.name, props.roomName, true)
                             } else {
                                 handleOnClick(false, props.name, props.roomName, false)
                             }
                         } else if(isLike == false){
-                            // songDispatch(userLike(props.name, null))
                             setLike(null)
                             handleOnClick(true, props.name, props.roomName, false)
                         }
