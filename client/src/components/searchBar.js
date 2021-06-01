@@ -57,7 +57,7 @@ const SearchBar = (props) => {
     const songDispatch = useDispatch()
 
     useEffect(() => {
-        socket.on('queue_update', (song) => {
+        socket.on('queueUpdate', (song) => {
             songDispatch(addSong(song))
         })
         socket.on('changeLike', (song, isLike) => {

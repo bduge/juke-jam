@@ -56,7 +56,7 @@ const Song = (props) => {
                         setLike(true)
                         if(isLike === null || isLike === false){
                             // songDispatch(userLike(props.name, true))
-                            if(isLike === false ){
+                            if(isLike === false){
                                 handleOnClick(true, props.name, props.roomName, true)
                             } else {
                                 handleOnClick(true, props.name, props.roomName, false)

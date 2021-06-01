@@ -51,7 +51,7 @@ const Player = (props) => {
     const [state, dispatch] = useReducer(reducerFunc, intialState)
     const songDispatch = useDispatch()
     useEffect(() => {
-        socket.on('song_played', (song) => {
+        socket.on('songPlayed', (song) => {
             songDispatch(removeSong(song.uri))
             dispatch({
                 type: 'played',
@@ -60,7 +60,7 @@ const Player = (props) => {
                 artist: song.artist,
             })
         })
-        socket.on('music_stopped', () => {
+        socket.on('musicStopped', () => {
             dispatch({ type: 'reset' })
         })
         let fetchOptions = {

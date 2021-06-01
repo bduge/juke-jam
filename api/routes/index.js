@@ -2,6 +2,7 @@ var express = require('express')
 var router = express.Router()
 let Room = require('../models/room')
 
+// Endpoint to handle song likes/dislikes
 router.post('/change_like', async function (req, res) {
     let songTitle = req.body.songTitle
     let roomName = req.body.roomName
@@ -14,6 +15,7 @@ router.post('/change_like', async function (req, res) {
                 ? (room.song_queue[i].likes += changeVal)
                 : (room.song_queue[i].likes -= changeVal)
             room.save()
+            // Send signal to update client side like display
             req.app.get('io').to(roomName).emit('changeLike', curSong, req.body.isLike)
             res.json({ ok: true, message: 'Like Changed' })
             return
@@ -22,6 +24,7 @@ router.post('/change_like', async function (req, res) {
     return
 })
 
+// Add a song to a room's queue
 router.post('/add_song', async function (req, res) {
     let song = req.body.song
     let roomName = req.body.roomName
@@ -39,9 +42,7 @@ router.post('/add_song', async function (req, res) {
         formattedSong = room.song_queue[index]
         room.save()
         req.app.get('io').to(roomName).emit('changeLike', formattedSong, null)
-        // console.log(room)
         res.json({ ok: true, message: 'Increment like' })
-        
         return
     } else {
         formattedSong = {
@@ -55,14 +56,13 @@ router.post('/add_song', async function (req, res) {
         }
         room.song_queue.push(formattedSong)
         room.save()
-        req.app.get('io').to(roomName).emit('queue_update', formattedSong)
+        req.app.get('io').to(roomName).emit('queueUpdate', formattedSong)
         res.json({ ok: true, message: 'song added' })
         return
     }
-    // console.log('UPDATED ROOM')
-    // console.log(room)
 })
 
+// Fetch current song in room
 router.post('/get_current_song', async function (req, res) {
     let roomName = req.body.room
     let room = await Room.findOne({ name: roomName }).exec()
@@ -73,10 +73,11 @@ router.post('/get_current_song', async function (req, res) {
     }
 })
 
+// Fetch current device in room
 router.post('/get_current_device', async function(req, res) {
     let roomName = req.body.room
     let room = await Room.findOne({ name: roomName }).exec()
-    if (room.device_id){
+    if (room && room.device_id){
         res.json({
             found: true,
             deviceName: room.device_name,
@@ -86,6 +87,7 @@ router.post('/get_current_device', async function(req, res) {
     }
 })
 
+// Delete room, triggered after host leaves room
 router.delete('/delete_room', async function(req, res) {
     let roomName = req.body.room
     await Room.deleteOne({ name: roomName }).exec()
@@ -93,35 +95,16 @@ router.delete('/delete_room', async function(req, res) {
     res.json({})
 })
 
+// Fetch songs in a room's queue
 router.post('/get_room_songs', async function (req, res) {
     let roomName = req.body.roomName
     let room = await Room.findOne({ name: roomName }).exec()
+    if (!room){
+        res.json({ ok: false })
+        return
+    }
     let songs = room.song_queue
     res.json({ ok: true, queue: songs })
-    // let songArray = []
-    // let addedSongs = []
-
-    // if (storeSongs.length === 0) {
-    //     songArray = room.song_queue
-    //     res.json({ ok: true, message: 'Queue Imported', songArray: songArray })
-    // } else if (storeSongs.length === room.song_queue.length) {
-    //     //Queue is already updated, nothing needs to happen
-    //     res.json({ ok: true, message: 'No Updated Needed' })
-    // } else {
-    //     for (var i = 0; i < room.song_queue.length; i++) {
-    //         dbSongObj = room.song_queue[i]
-    //         for (var j = 0; j < storeSongs.length; j++) {
-    //             storeSongObj = storeSongs[j]
-    //             if (storeSongObj.title === dbSongObj.title) {
-    //                 break
-    //             } else if (j === storeSongs.length - 1) {
-    //                 addedSongs.push(dbSongObj)
-    //             }
-    //         }
-    //     }
-    //     res.json({ ok: true, message: 'Updated Queue', songArray: addedSongs })
-    // }
-    // return
 })
 
 module.exports = router

@@ -100,7 +100,7 @@ class Room extends React.Component {
         socket.on('roomDeleted', () => {
             this.setState({ trigPopDeleted: true })
         })
-        socket.emit('request join', this.state.roomName, this.checkRoomCallback)
+        socket.emit('requestJoin', this.state.roomName, this.checkRoomCallback)
         this.getCurrentRoomSongs(this.state.roomName)
         this.getCurrentDevice(this.state.roomName)
         window.addEventListener("beforeunload", this.deleteLocalStorage)
@@ -108,7 +108,7 @@ class Room extends React.Component {
     }
 
     componentWillUnmount() {
-        socket.emit('request leave', this.state.roomName, null)
+        socket.emit('requestLeave', this.state.roomName, null)
         window.removeEventListener("beforeunload", this.deleteLocalStorage)
     }
 

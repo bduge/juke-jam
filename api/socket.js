@@ -1,6 +1,8 @@
 var socketio = require('socket.io')
 const Room = require('./models/room')
 
+// Manages socket connections and room membership
+
 function connectSocket(server) {
     io = socketio(server)
     io.on('connection', (socket) => {
@@ -18,12 +20,11 @@ function connectSocket(server) {
                     continue
                 }
                 console.log(socket.id, 'is leaving', room)
-                // TODO: Check if room is empty, delete if true
             }
         })
 
         // Join Room
-        socket.on('request join', async (roomName, callback) => {
+        socket.on('requestJoin', async (roomName, callback) => {
             if (roomName == '') {
                 callback(false, 'Invalid room name')
             } else if (Object.keys(socket.rooms).length > 1) {
@@ -43,7 +44,7 @@ function connectSocket(server) {
         })
 
         // Leave Room
-        socket.on('request leave', (roomName, callback) => {
+        socket.on('requestLeave', (roomName, callback) => {
             console.log(socket.id, 'is leaving', roomName)
             socket.leave(roomName)
             if (callback) {

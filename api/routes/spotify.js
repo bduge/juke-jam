@@ -4,6 +4,7 @@ const axios = require('axios')
 const Room = require('../models/room')
 require('dotenv').config()
 
+// Gloabl timer object to set timeout while song is playing to play the next song once it ends
 let global_timer
 
 // Retrieve authorization and refresh token from backend. Store in database under room name
@@ -73,6 +74,7 @@ router.post('/get_token', async function (req, res) {
     })
 })
 
+// Get available devices associated with host's account
 router.post('/get_devices', async function (req, res) {
     let room = req.body.roomName
     let token = await refresh_token(room)
@@ -106,6 +108,7 @@ router.post('/get_devices', async function (req, res) {
     )
 })
 
+// Set room's active device to play music from
 router.put('/update_device', async function (req, res) {
     let roomName = req.body.room
     let deviceId = req.body.deviceId
@@ -136,7 +139,7 @@ router.put('/update_device', async function (req, res) {
         })
 })
 
-// Search for song using spotify api
+// Search for songs using spotify api
 router.post('/search', async function (req, res) {
     let searchString = req.body.searchString
     let roomName = req.body.roomName
@@ -160,14 +163,16 @@ router.post('/search', async function (req, res) {
         let results = await formatSongArr(response.data.tracks.items)
         res.send(results)
     } catch (error) {
-        console.log(error.response.data)
+        error.response && console.log(error.response.data)
     }
 })
 
+// Play current song or next up in queue
 router.put('/play', function (req, res) {
     playSong(req.body.room, req.app.get('io'), req.body.resume, res)
 })
 
+// Pause current song
 router.put('/pause', async function (req, res) {
     let roomName = req.body.room
     let room = await Room.findOne({ name: roomName }).exec()
@@ -217,6 +222,7 @@ router.put('/pause', async function (req, res) {
         })
 })
 
+// Endpoint to verify user rejoining room matches host id
 router.post('/user_id', async function(req, res) {
     let code = req.body.code
     let roomName = req.body.roomName
@@ -332,12 +338,14 @@ async function refresh_token(room_name) {
     return room.access_token
 }
 
+// Play song
 async function playSong(roomName, io, resume, client = null) {
     let room = await Room.findOne({ name: roomName }).exec()
     if (client === null && room.currently_playing.paused) {
         return
     } else if (!resume && room.song_queue.length == 0) {
-        io.to(roomName).emit('music_stopped')
+        // Queue is empty, nothing to play
+        io.to(roomName).emit('musicStopped')
         if (client) {
             client.json({ ok: false, message: 'empty' })
         }
@@ -351,6 +359,7 @@ async function playSong(roomName, io, resume, client = null) {
             Authorization: 'Bearer ' + authToken,
         },
     }
+    // Fetch spotify player's current status
     let response
     try {
         response = await axios(playingOptions)
@@ -364,13 +373,13 @@ async function playSong(roomName, io, resume, client = null) {
               return song.likes > mostLiked.likes ? song : mostLiked
           })
 
+    // Pause current song if necessary (i.e. song was played outside juke jam)
     let externallyPlaying = response.data.is_playing
     if (externallyPlaying){
         await pauseExternal(authToken)
     }
 
     let sameSong = response.data.item && (response.data.item.uri == song.uri)
-
     let playOptions = {
         method: 'put',
         url: 'https://api.spotify.com/v1/me/player/play',
@@ -385,27 +394,34 @@ async function playSong(roomName, io, resume, client = null) {
             uris: [song.uri],
         },
     }
+    // Set shorter timer if we're resuming from middle of a song
     let songLength = song.length
     if (resume && sameSong) {
         playOptions.data.uris = null
         songLength = response.data.item.duration_ms - response.data.progress_ms
     }
+
+    // Make Spotify request to play song
     axios(playOptions)
         .then(() => {
-            if (!resume)
+            // Update room data
+            if (!resume) {
                 room.updateOne({
                     $pull: { song_queue: { uri: song.uri } },
                 }).exec()
+            }
             song.paused = false
             room.currently_playing = song
             room.save()
-            io.to(roomName).emit('song_played', {
+            // Show playing song in client
+            io.to(roomName).emit('songPlayed', {
                 title: song.title,
                 artist: song.artist,
                 image: song.image,
                 uri: song.uri,
             })
             // Change from API response to socket signal to keep sending updates
+            // Set timer to play next song when current song ends
             console.log("TIMEOUT SET: ", songLength)
             clearTimeout(global_timer)
             global_timer = setTimeout(
@@ -425,6 +441,9 @@ async function playSong(roomName, io, resume, client = null) {
         })
 }
 
+// Pause song currently playing on hosts account
+// Should only be used before making request to play song from queue
+// Pausing a song inside Juke Jam has separate handler (/pause)
 async function pauseExternal(authToken){
     const playingOptions = {
         method: 'get',
@@ -463,24 +482,5 @@ async function formatSongArr(objectArr) {
     })
     return songArr
 }
-
-// ROUTES FOR TESTING PURPOSES
-const scopes = 'user-read-private user-read-email'
-router.get('/refresh_token_test', function (req, res) {
-    let room_name = req.query.name || 'test'
-    refresh_token(room_name)
-    res.send('Hello')
-})
-
-router.get('/authorize_test', function (req, res) {
-    res.redirect(
-        'https://accounts.spotify.com/authorize?response_type=code' +
-            '&client_id=' +
-            process.env.CLIENT_ID +
-            '&scope=' +
-            encodeURIComponent(scopes) +
-            `&redirect_uri=${process.env.BASE_URL}/spotify/get_token`
-    )
-})
 
 module.exports = router
